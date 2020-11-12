@@ -13,7 +13,7 @@ test:
   - redis:latest
   script:
   - npm i
-  - cp $config ./config.testing.json
+  - cp $config config.testing.json
   - npm test
 build:
   image: docker:19.03.11
