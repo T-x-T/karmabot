@@ -1,0 +1,30 @@
+{
+  "name": "karmabot",
+  "version": "1.0.0",
+  "description": "Discord bot to add a karma system similar to reddit in Discord",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "discord.js": "^12.4.1",
+    "ioredis": "^4.19.2"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1"
+  },
+  "scripts": {
+    "test": "mocha --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/t-x-t/karmabot.git"
+  },
+  "author": "txt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/t-x-t/karmabot/issues"
+  },
+  "homepage": "https://gitlab.com/t-x-t/karmabot#readme"
+}
