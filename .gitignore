@@ -1,3 +1,5 @@
 node_modules
 .vscode
 .nyc_output
+config.staging.json
+config.testing.json
