@@ -99,7 +99,7 @@ export default function(redisIp, redisPort){
     });
 
     it("write no upvote when guild is disabled in targetusers config", async function(){
-      await redis.rpush(`${targetUserId}:config:disabledguilds`, guildId);
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
 
       await upvote(srcUserId, targetUserId, guildId);
       let res = await redis.get(`${targetUserId}:karma`);
@@ -107,7 +107,7 @@ export default function(redisIp, redisPort){
     });
 
     it("write upvote when different guild is disabled in targetusers config", async function(){
-      await redis.rpush(`${targetUserId}:config:disabledguilds`, guildId + 1);
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId + 1);
 
       await upvote(srcUserId, targetUserId, guildId);
       let res = await redis.get(`${targetUserId}:karma`);
@@ -207,7 +207,7 @@ export default function(redisIp, redisPort){
     });
 
     it("write no downvote when guild is disabled in targetusers config", async function() {
-      await redis.rpush(`${targetUserId}:config:disabledguilds`, guildId);
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
 
       await downvote(srcUserId, targetUserId, guildId);
       let res = await redis.get(`${targetUserId}:karma`);
@@ -215,7 +215,7 @@ export default function(redisIp, redisPort){
     });
 
     it("write downvote when different guild is disabled in targetusers config", async function() {
-      await redis.rpush(`${targetUserId}:config:disabledguilds`, guildId + 1);
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId + 1);
 
       await downvote(srcUserId, targetUserId, guildId);
       let res = await redis.get(`${targetUserId}:karma`);

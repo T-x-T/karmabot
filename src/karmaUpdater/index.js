@@ -7,8 +7,8 @@ export default async () => {
   
   try{
     await connect(global.CONFIG.redisIp, global.CONFIG.redisPort);
-    console.log("Redis connected");
+    console.log("karmaUpdater connected to redis");
   }catch(e){
-    console.error("Redis couldnt connect:", e);
+    console.error("karmaUpdater failed to connect to redis:", e);
   }
 };
