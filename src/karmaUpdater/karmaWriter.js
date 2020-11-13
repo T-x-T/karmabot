@@ -17,11 +17,11 @@ export default{
   },
 
   async incrementKarma(userId) {
-    await redis.incr(`${userId}:karma`);
+    await redis.zincrby("userkarma", 1, userId);
   },
 
   async decrementKarma(userId) {
-    await redis.decr(`${userId}:karma`);
+    await redis.zincrby("userkarma", -1, userId);
   },
 
   async addVoteTimestamp(userId) {
@@ -33,19 +33,19 @@ export default{
   },
 
   async incrementGuildKarmaOfUser(userId, guildId) {
-    await redis.incr(`${guildId}:${userId}:karma`);
+    await redis.zincrby(`${guildId}:userkarma`, 1, userId);
   },
 
   async decrementGuildKarmaOfUser(userId, guildId) {
-    await redis.decr(`${guildId}:${userId}:karma`);
+    await redis.zincrby(`${guildId}:userkarma`, -1, userId);
   },
 
   async incrementGuildTotalKarma(guildId) {
-    await redis.incr(`${guildId}:karma`);
+    await redis.zincrby(`guildkarma`, 1, guildId);
   },
 
   async decrementGuildTotalKarma(guildId) {
-    await redis.decr(`${guildId}:karma`);
+    await redis.zincrby(`guildkarma`, -1, guildId);
   },
 
   async addUserToGuildUserListIfNotPresent(userId, guildId) {

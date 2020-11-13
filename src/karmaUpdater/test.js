@@ -41,7 +41,7 @@ export default function(redisIp, redisPort){
   describe("upvote", function(){
     it("write a good upvote", async function(){
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "1");
     });
 
@@ -55,7 +55,7 @@ export default function(redisIp, redisPort){
       await upvote(srcUserId, targetUserId, guildId);
       await upvote(srcUserId, targetUserId, guildId);
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "2");
     });
 
@@ -64,7 +64,7 @@ export default function(redisIp, redisPort){
       await redis.rpush(`${srcUserId}:votetimestamps`, Date.now() - 6000);
 
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -74,7 +74,7 @@ export default function(redisIp, redisPort){
       }
 
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -86,7 +86,7 @@ export default function(redisIp, redisPort){
       await pipeline.exec();
 
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -94,7 +94,7 @@ export default function(redisIp, redisPort){
       await redis.set(`${targetUserId}:config:disabled`, true);
 
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -102,7 +102,7 @@ export default function(redisIp, redisPort){
       await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
 
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -110,7 +110,7 @@ export default function(redisIp, redisPort){
       await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId + 1);
 
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "1");
     });
 
@@ -123,13 +123,13 @@ export default function(redisIp, redisPort){
 
     it("increments karma of user in guild", async function(){
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${guildId}:${targetUserId}:karma`);
+      let res = await redis.zscore(`${guildId}:userkarma`, targetUserId);
       assert.strictEqual(res, "1");
     });
 
     it("increments total karma of guild", async function(){
       await upvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${guildId}:karma`);
+      let res = await redis.zscore(`guildkarma`, guildId);
       assert.strictEqual(res, "1");
     });
 
@@ -149,7 +149,7 @@ export default function(redisIp, redisPort){
   describe("downvote", function(){
     it("write a good downvote", async function() {
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "-1");
     });
 
@@ -163,7 +163,7 @@ export default function(redisIp, redisPort){
       await downvote(srcUserId, targetUserId, guildId);
       await downvote(srcUserId, targetUserId, guildId);
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "-2");
     });
 
@@ -172,7 +172,7 @@ export default function(redisIp, redisPort){
       await redis.rpush(`${srcUserId}:votetimestamps`, Date.now() - 6000);
 
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -182,7 +182,7 @@ export default function(redisIp, redisPort){
       }
 
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -194,7 +194,7 @@ export default function(redisIp, redisPort){
       await pipeline.exec();
 
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -202,7 +202,7 @@ export default function(redisIp, redisPort){
       await redis.set(`${targetUserId}:config:disabled`, true);
 
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -210,7 +210,7 @@ export default function(redisIp, redisPort){
       await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
 
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, null);
     });
 
@@ -218,7 +218,7 @@ export default function(redisIp, redisPort){
       await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId + 1);
 
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "-1");
     });
 
@@ -231,13 +231,13 @@ export default function(redisIp, redisPort){
 
     it("decrements karma of user in guild", async function() {
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${guildId}:${targetUserId}:karma`);
+      let res = await redis.zscore(`${guildId}:userkarma`, targetUserId);
       assert.strictEqual(res, "-1");
     });
 
     it("decrements total karma of guild", async function() {
       await downvote(srcUserId, targetUserId, guildId);
-      let res = await redis.get(`${guildId}:karma`);
+      let res = await redis.zscore("guildkarma", guildId);
       assert.strictEqual(res, "-1");
     });
 
@@ -257,19 +257,19 @@ export default function(redisIp, redisPort){
   describe("removeUpvote", function(){
     it("decrements karma of targetUser", async function(){
       await removeUpvote(targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "-1");
     });
 
     it("decrements karma of targetUser in guild", async function(){
       await removeUpvote(targetUserId, guildId);
-      let res = await redis.get(`${guildId}:${targetUserId}:karma`);
+      let res = await redis.zscore(`${guildId}:userkarma`, targetUserId);
       assert.strictEqual(res, "-1");
     });
 
     it("decrements total karma of guild", async function(){
       await removeUpvote(targetUserId, guildId);
-      let res = await redis.get(`${guildId}:karma`);
+      let res = await redis.zscore("guildkarma", guildId);
       assert.strictEqual(res, "-1");
     });
   });
@@ -277,19 +277,19 @@ export default function(redisIp, redisPort){
   describe("removeDownvote", function(){
     it("increments karma of targetUser", async function() {
       await removeDownvote(targetUserId, guildId);
-      let res = await redis.get(`${targetUserId}:karma`);
+      let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "1");
     });
 
     it("increments karma of targetUser in guild", async function() {
       await removeDownvote(targetUserId, guildId);
-      let res = await redis.get(`${guildId}:${targetUserId}:karma`);
+      let res = await redis.zscore(`${guildId}:userkarma`, targetUserId);
       assert.strictEqual(res, "1");
     });
 
     it("increments total karma of guild", async function() {
       await removeDownvote(targetUserId, guildId);
-      let res = await redis.get(`${guildId}:karma`);
+      let res = await redis.zscore("guildkarma", guildId);
       assert.strictEqual(res, "1");
     });
   });

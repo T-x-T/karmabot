@@ -43,7 +43,7 @@ export default function(redisIp, redisPort){
   describe("getTotalKarmaOfUser", function(){
     it("returns values -10 to 10 correctly", async function(){
       for(let i = -10; i <= 10; i++){
-        await redis.set(`${targetUserId}:karma`, i);
+        await redis.zadd("userkarma", i, targetUserId);
         let res = await karmaRetriever.getTotalKarmaOfUser(targetUserId);
         assert.strictEqual(res, i);
       }
@@ -56,7 +56,7 @@ export default function(redisIp, redisPort){
 
     it("throws when targetUser is disabled", async function(){
       await redis.set(`${targetUserId}:config:disabled`, true);
-      await redis.set(`${targetUserId}:karma`, 0);
+      await redis.zadd("userkarma", 0, targetUserId);
       await assert.rejects(async () => await karmaRetriever.getTotalKarmaOfUser(targetUserId), new Error("user is disabled"));
     });
   });
@@ -64,7 +64,7 @@ export default function(redisIp, redisPort){
   describe("getTotalKarmaOfUserInGuild", function() {
     it("returns values -10 to 10 correctly", async function() {
       for(let i = -10; i <= 10; i++) {
-        await redis.set(`${guildId}:${targetUserId}:karma`, i);
+        await redis.zadd(`${guildId}:userkarma`, i, targetUserId);
         let res = await karmaRetriever.getTotalKarmaOfUserInGuild(targetUserId, guildId);
         assert.strictEqual(res, i);
       }
@@ -76,20 +76,20 @@ export default function(redisIp, redisPort){
     });
 
     it("returns 0 when user has karma in another guild", async function(){
-      await redis.set(`${guildId+1}:${targetUserId}:karma`, 1);
+      await redis.zadd(`${guildId+1}:userkarma`, 1, targetUserId);
       let res = await karmaRetriever.getTotalKarmaOfUserInGuild(targetUserId, guildId);
       assert.strictEqual(res, 0);
     });
 
     it("throws when targetUser is disabled", async function() {
       await redis.set(`${targetUserId}:config:disabled`, true);
-      await redis.set(`${guildId}:${targetUserId}:karma`, 0);
+      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId);
       await assert.rejects(async () => await karmaRetriever.getTotalKarmaOfUserInGuild(targetUserId, guildId), new Error("user is disabled"));
     });
 
     it("throws when guild is disabled in targetUsers config", async function() {
       await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
-      await redis.set(`${guildId}:${targetUserId}:karma`, 0);
+      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId);
       await assert.rejects(async () => await karmaRetriever.getTotalKarmaOfUserInGuild(targetUserId, guildId), new Error("guild is disabled in user"));
     });
   });
@@ -97,7 +97,7 @@ export default function(redisIp, redisPort){
   describe("getTotalKarmaOfGuild", function(){
     it("returns values -10 to 10 correctly", async function() {
       for(let i = -10; i <= 10; i++) {
-        await redis.set(`${guildId}:karma`, i);
+        await redis.zadd("guildkarma", i, guildId);
         let res = await karmaRetriever.getTotalKarmaOfGuild(guildId);
         assert.strictEqual(res, i);
       }
@@ -110,7 +110,7 @@ export default function(redisIp, redisPort){
 
     it("throws when guild is disabled", async function(){
       await redis.set(`${guildId}:config:disabled`, true);
-      await redis.set(`${guildId}:karma`, 0);
+      await redis.zadd("guildkarma", 0, guildId);
       await assert.rejects(async () => await karmaRetriever.getTotalKarmaOfGuild(guildId), new Error("guild is disabled"));
     });
   });

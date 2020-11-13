@@ -17,14 +17,14 @@ export default {
   },
 
   async getTotalKarmaOfUser(userId){
-    return await redis.get(`${userId}:karma`);
+    return await redis.zscore("userkarma", userId);
   },
 
   async getTotalKarmaOfUserInGuild(userId, guildId){
-    return await redis.get(`${guildId}:${userId}:karma`);
+    return await redis.zscore(`${guildId}:userkarma`, userId);
   },
 
   async getTotalKarmaOfGuild(guildId){
-    return await redis.get(`${guildId}:karma`);
+    return await redis.zscore(`guildkarma`, guildId);
   }
 }
