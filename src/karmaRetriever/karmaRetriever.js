@@ -148,7 +148,7 @@ export default {
       if(a.karma !== b.karma){
         return b.karma - a.karma;
       }else{
-        return Number.parseInt((BigInt(b.userId) - BigInt(a.userId)).toString());
+        return Number(BigInt(b.userId) - BigInt(a.userId));
       }
     });
     finalArray = finalArray.slice(0, count);
