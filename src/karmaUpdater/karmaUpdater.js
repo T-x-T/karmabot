@@ -24,6 +24,16 @@ async function downvote(srcUserId, targetUserId, guildId){
   ]);
 }
 
+async function removeUpvote(srcUserId, targetUserId, guildId) {
+  if(!await isValidVote(srcUserId, targetUserId, guildId)) return;
+  await decrementKarma(targetUserId, guildId);
+}
+
+async function removeDownvote(srcUserId, targetUserId, guildId) {
+  if(!await isValidVote(srcUserId, targetUserId, guildId)) return;
+  await incrementKarma(targetUserId, guildId);
+}
+
 async function commonValidVoteTasks(srcUserId, targetUserId, guildId){
   await Promise.all([
     karmaWriter.addVoteTimestamp(srcUserId),
@@ -37,7 +47,7 @@ async function isValidVote(srcUserId, targetUserId, guildId){
   if(await configReader.isUserDisabled(targetUserId)) return false;
   if(await configReader.isGuildDisabledInUser(targetUserId, guildId)) return false;
   if(await isRateLimited(srcUserId)) return false;
-  
+
   return true;
 }
 
@@ -69,14 +79,6 @@ async function isRateLimited(srcUserId){
   if(votesInPastDay >= 50) return true;
 
   return false;
-}
-
-async function removeUpvote(targetUserId, guildId){
-  await decrementKarma(targetUserId, guildId);
-}
-
-async function removeDownvote(targetUserId, guildId){
-  await incrementKarma(targetUserId, guildId);
 }
 
 async function incrementKarma(targetUserId, guildId){

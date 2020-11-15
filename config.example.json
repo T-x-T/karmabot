@@ -1,5 +1,6 @@
 {
   "botToken": "discord bot token",
+  "botPrefix": "+karma",
   "redisIp": "127.0.0.1",
   "redisPort": 6379
 }

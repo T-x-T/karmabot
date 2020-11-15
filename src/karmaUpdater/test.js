@@ -256,19 +256,19 @@ export default function(redisIp, redisPort){
 
   describe("removeUpvote", function(){
     it("decrements karma of targetUser", async function(){
-      await removeUpvote(targetUserId, guildId);
+      await removeUpvote(srcUserId, targetUserId, guildId);
       let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "-1");
     });
 
     it("decrements karma of targetUser in guild", async function(){
-      await removeUpvote(targetUserId, guildId);
+      await removeUpvote(srcUserId, targetUserId, guildId);
       let res = await redis.zscore(`${guildId}:userkarma`, targetUserId);
       assert.strictEqual(res, "-1");
     });
 
     it("decrements total karma of guild", async function(){
-      await removeUpvote(targetUserId, guildId);
+      await removeUpvote(srcUserId, targetUserId, guildId);
       let res = await redis.zscore("guildkarma", guildId);
       assert.strictEqual(res, "-1");
     });
@@ -276,19 +276,19 @@ export default function(redisIp, redisPort){
 
   describe("removeDownvote", function(){
     it("increments karma of targetUser", async function() {
-      await removeDownvote(targetUserId, guildId);
+      await removeDownvote(srcUserId, targetUserId, guildId);
       let res = await redis.zscore("userkarma", targetUserId);
       assert.strictEqual(res, "1");
     });
 
     it("increments karma of targetUser in guild", async function() {
-      await removeDownvote(targetUserId, guildId);
+      await removeDownvote(srcUserId, targetUserId, guildId);
       let res = await redis.zscore(`${guildId}:userkarma`, targetUserId);
       assert.strictEqual(res, "1");
     });
 
     it("increments total karma of guild", async function() {
-      await removeDownvote(targetUserId, guildId);
+      await removeDownvote(srcUserId, targetUserId, guildId);
       let res = await redis.zscore("guildkarma", guildId);
       assert.strictEqual(res, "1");
     });
