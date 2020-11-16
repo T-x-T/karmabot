@@ -5,7 +5,6 @@
 stages:
 - test
 - build
-- sast
 test:
   stage: test
   image: node:latest
@@ -26,12 +25,10 @@ build:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - docker build -t $IMAGE_TAG .
   - docker push $IMAGE_TAG
-sast:
-  variables:
+variables:
     SAST_EXCLUDED_PATHS: "*test*"
     SAST_DEFAULT_ANALYZERS: brakeman, bandit, eslint, flawfinder, kubesec, nodejs-scan,
       gosec, phpcs-security-audit, pmd-apex, security-code-scan, sobelow, spotbugs
-  stage: sast
 include:
 - template: Security/SAST.gitlab-ci.yml
 - template: Dependency-Scanning.gitlab-ci.yml
