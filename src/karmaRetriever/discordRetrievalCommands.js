@@ -9,7 +9,7 @@ export default (_client, _commandPrefix) => {
     let content = message.content.toLowerCase();
 
     if(message.author.bot) return;
-    if(!content.startsWith(commandPrefix)) return;
+    if(!content.startsWith(commandPrefix + "show") && !content.startsWith(commandPrefix + "rank") && !content.startsWith(commandPrefix + "top")) return;
     if(!message.guild){
       message.channel.send("I only work in servers at the moment");
       return;

@@ -22,5 +22,13 @@ export default{
 
   async isGuildDisabledInUser(userId, guildId){
     return await redis.sismember(`${userId}:config:disabledguilds`, guildId) === 1 ? true : false;
+  },
+
+  async getGuildUpvoteEmoji(guildId){
+    return await redis.get(`${guildId}:config:upvoteemojiid`);
+  },
+
+  async getGuildDownvoteEmoji(guildId) {
+    return await redis.get(`${guildId}:config:downvoteemojiid`);
   }
 }

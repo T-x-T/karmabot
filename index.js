@@ -15,7 +15,7 @@ discordClient.login(global.CONFIG.botToken).then(async () => {
   await Promise.all([
     setupKarmaUpdater(discordClient),
     setupKarmaRetriever(discordClient),
-    setupConfigurator(),
+    setupConfigurator(discordClient),
   ]);
   console.log("everything logged in, lets go!");
 });
