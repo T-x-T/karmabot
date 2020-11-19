@@ -1,5 +1,4 @@
 import configurator from "./configurator.js";
-import Discord from "discord.js";
 
 let commandPrefix = "";
 
@@ -14,7 +13,6 @@ export default (_client, _commandPrefix) => {
     if(!content.startsWith(commandPrefix + "config")) return;
     
     content = content.replace(commandPrefix, "");
-   // let command = content.split(" ")[0];
     let command = content.replace("config ", "");
     for(let executor in commandRoutes){
       if(command.startsWith(executor)){
