@@ -6,6 +6,7 @@ export default _client => {
 
   client.on("messageReactionAdd", async (reaction, user) => {
     if(!reaction.emoji.id) return;
+    if(!reaction.message.guild) return;
     if(user.bot) return;
 
     if(!reaction.message.author) await reaction.message.channel.messages.fetch(reaction.message.id);
@@ -16,6 +17,7 @@ export default _client => {
 
   client.on("messageReactionRemove", async (reaction, user) => {
     if(!reaction.emoji.id) return;
+    if(!reaction.message.guild) return;
     if(user.bot) return;
     
     if(!reaction.message.author) await reaction.message.channel.messages.fetch(reaction.message.id);
