@@ -9,15 +9,20 @@ services:
     links:
       - redis
     networks:
+      - data
       - nginx
   redis:
     image: redis
     restart: always
     volumes:
       - "/opt/karmabot/redis.conf:/usr/local/etc/redis/redis.conf"
-      - "/redisdata:/data"
+      - "/opt/karmabot/redisdata:/data"
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - data
 
 networks:
+  data:
+    driver: "bridge"
   nginx:
     external: true
