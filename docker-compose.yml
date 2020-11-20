@@ -4,8 +4,6 @@ services:
   node:
     image: registry.gitlab.com/t-x-t/karmabot:master
     restart: always
-    ports:
-      - "127.0.0.1:4000:4000"
     volumes:
       - "/opt/karmabot/config.prod.json:/srv/karmabot/config.prod.json"
     links:
