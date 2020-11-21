@@ -25,8 +25,24 @@ export default (_client, _commandPrefix) => {
     help(message);
   });
 
-  client.on("guildCreate", guild => {
-    guild.systemChannel.send(`Thanks for inviting me, please configure your upvote/downvote emoji so I can start tracking karma in this server:\n${commandPrefix}config server set <upvote|downvote> emoji <emoji>\nfor more help use '${commandPrefix}help' and '${commandPrefix}info`);
+  client.on("guildCreate", async guild => {
+    let message = `Thanks for inviting me, please configure your upvote/downvote emoji so I can start tracking karma in this server:\n${commandPrefix}config server set <upvote|downvote> emoji <emoji>\nfor more help use '${commandPrefix}help' and '${commandPrefix}info`;
+    let channel = guild.systemChannel;
+    if(!channel) await (guild.channels.cache.array()).forEach(_channel => {
+      if(_channel.name.includes("general")){
+        if(channel && channel.name.length > _channel.name.length){
+          channel = _channel;
+        }else if(!channel){
+          channel = _channel;
+        }
+      }
+    });
+    
+    if(channel){
+      channel.send(message);
+    }else{
+      guild.owner.send(message);
+    }
   });
 }
 
