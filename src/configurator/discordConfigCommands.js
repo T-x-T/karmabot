@@ -142,6 +142,18 @@ async function setUpvoteEmoji(message) {
   try {
     let emojiId = extractEmojiId(message);
     if(!emojiId) return;
+    
+    if(emojiId === "default"){
+      try{
+        let emoji = await addDefaultUpvoteEmoji(message.guild);
+        await configurator.setUpvoteEmoji(message.guild.id, emoji.id);
+        message.channel.send(`The new upvote emoji of ${message.guild.name} is ${emoji}! React with this emoji to messages to upvote them.`);
+      } catch(e) {
+        console.log(e);
+        message.channel.send("Failed to set the default upvote emoji");
+      }
+      return;
+    }
 
     let emoji = await message.guild.emojis.cache.get(emojiId);
 
@@ -171,6 +183,18 @@ async function setDownvoteEmoji(message) {
     let emojiId = extractEmojiId(message);
     if(!emojiId) return;
 
+    if(emojiId === "default") {
+      try {
+        let emoji = await addDefaultDownvoteEmoji(message.guild);
+        await configurator.setDownvoteEmoji(message.guild.id, emoji.id);
+        message.channel.send(`The new downvote emoji of ${message.guild.name} is ${emoji}! React with this emoji to messages to downvote them.`);
+      } catch(e) {
+        console.log(e);
+        message.channel.send("Failed to set the default downvote emoji");
+      }
+      return;
+    }
+
     let emoji = await message.guild.emojis.cache.get(emojiId);
 
     if(isValidEmoji(emoji, message.guild.id)) {
@@ -189,7 +213,11 @@ function extractEmojiId(message){
 
   if(words.length !== 7) {
     message.channel.send("Invalid amount of arguments");
-    return;
+    return false;
+  }
+
+  if(words[words.length - 1] === "default"){
+    return "default";
   }
 
   let emojiId;
@@ -197,7 +225,7 @@ function extractEmojiId(message){
     emojiId = words[words.length - 1].split(":")[2].replace(">", "");
   } catch(e) {
     message.channel.send("You can only use custom server emojis!");
-    return;
+    return false;
   }
 
   return emojiId;
@@ -209,4 +237,12 @@ function isValidEmoji(emoji, guildId){
 
 async function authorIsAdmin(message){
   return await message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR");
+}
+
+async function addDefaultUpvoteEmoji(guild){
+  return await guild.emojis.create("./src/configurator/emoji_upvote.png", "upvote");
+}
+
+async function addDefaultDownvoteEmoji(guild) {
+  return await guild.emojis.create("./src/configurator/emoji_downvote.png", "downvote");
 }

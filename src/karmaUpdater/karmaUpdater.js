@@ -45,7 +45,7 @@ async function commonValidVoteTasks(srcUserId, targetUserId, guildId){
 async function isValidVote(srcUserId, targetUserId, guildId){
   if(srcUserId === targetUserId) return false;
   if(await configReader.isUserDisabled(targetUserId)) return false;
-  if(await configReader.isGuildDisabledInUser(targetUserId, guildId)) return false;
+  if(await configReader.isGuildDisabledInUser(targetUserId, guildId)) return false
   if(await isRateLimited(srcUserId)) return false;
 
   return true;
