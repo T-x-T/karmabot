@@ -47,25 +47,76 @@ export default (_client, _commandPrefix) => {
 }
 
 const topics = {
-  info: info
+  "info": info,
+  "help show": show,
+  "help rank": rank,
+  "help top": top,
+  "help config": config
 };
 
 async function help(message){
   let output = "";
 
-  output += `Listing all commands\n`;
-  output += "Syntax: <mandatory choice> <mandatory option 1|mandatory option 2> [optional choice] [optional option 1|optional option 2]\n\n";
-  output += `The prefix ${commandPrefix}must be written infront of all commands\n`;
-  output += "If you dont @mention, the bot takes you instead\n";
-  output += "`help ` show this message\n\n";
-  output += "`info` show info\n\n";
-  output += "`show [@mention|serverkarma[@mention]|server]` show [total karma of @mention|karma in server of @mention|karma of server]\n\n";
-  output += "`rank [@mention|server total [@mention]|server global|server [@mention]]` rank [total rank of @mention|rank in server based on total karma of @mention|rank of server|rank in server of @mention]\n\n";
-  output += "`top [total]` show top 10 users in server [by total karma]\n\n";
-  output += "`config <disable|enable>` disables|enables you, this means your karma won't be counted and you won't be shown in any output when disabled. Can be DMed to the bot\n\n";
-  output += "`config <disable|enable> server` disables|enables current server. You won't be shown as part of the current server in any output when disabled.\n\n";
-  output += "`config server <disable|enable>` disables|enables server this was sent in. Server won't be shown in any output when disabled. Must be sent by an admin\n\n";
-  output += "`config server set <upvote|downvote> emoji <emoji>` sets up the <upvote|downvote> emoji of server. <emoji> must be a custom server emoji. Must be sent by an admin";
+  output += "basic commands:\n";
+  output += `\`${commandPrefix}help\`: show this message\n`;
+  output += `\`${commandPrefix}info\`: show general info about the bot\n\n`;
+
+  output += `karmabot specific commands (use \`${commandPrefix}help [command]\` to get more help on the following commands):\n`;
+  output += `\`${commandPrefix}show\`: show karma of single user\n`;
+  output += `\`${commandPrefix}rank\`: show rank of single user\n`;
+  output += `\`${commandPrefix}top\`: show top lists\n`;
+  output += `\`${commandPrefix}config\`: configure your (servers) experience\n`;
+  
+  message.channel.send(output);
+}
+
+function show(message){
+  let output = "";
+
+  output += `\`${commandPrefix}show\`: Show your global karma\n`; 
+  output += `\`${commandPrefix}show @mention\`: Show global karma of mentioned user\n`; 
+  output += `\`${commandPrefix}show serverkarma\`: Show your server karma\n`; 
+  output += `\`${commandPrefix}show serverkarma @mention\`: Show server karma of mentioned user\n`; 
+  output += `\`${commandPrefix}show server\`: Show karma of server\n`; 
+
+  message.channel.send(output);
+}
+
+function rank(message){
+  let output = "";
+
+  output += `\`${commandPrefix}rank\`: Show your global rank\n`; 
+  output += `\`${commandPrefix}rank @mention\`: Show global rank of mentioned user\n`; 
+  output += `\`${commandPrefix}rank server\`: Show your rank in the current server\n`; 
+  output += `\`${commandPrefix}rank server @mention\`: Show rank in the current server of mentioned user\n`; 
+  output += `\`${commandPrefix}rank server total\`: Show your rank in the current server based on your global karma\n`; 
+  output += `\`${commandPrefix}rank server total @mention\`: Show rank in the current server based on global karma of mentioned user\n`; 
+  
+  message.channel.send(output);
+}
+
+function top(message) {
+  let output = "";
+
+  output += `\`${commandPrefix}top\`: Show top 10 users in current server\n`;
+  output += `\`${commandPrefix}top total\`: Show top 10 users in current server based on global karma\n`;
+
+  message.channel.send(output);
+}
+
+function config(message) {
+  let output = "";
+
+  output += "User config commands:"
+  output += `\`${commandPrefix}config disable/enable\`: Disables/Enables you, this will stop counting your karma and displaying you in any output\n`;
+  output += `\`${commandPrefix}config disable/enable server\`: Disables/Enables you in the current server, this will stop counting your karma in the server and stop displaying you in any output specific to this server\n`;
+  
+  output += "Server config commands (must be sent by an admin):"
+  output += `\`${commandPrefix}config server disable/enable\`: Disables/Enables the current server, this will stop showing any output specific to this server.\n`;
+  output += `\`${commandPrefix}config server set upvote emoji _your custom emoji here_\`: Sets the server specific upvote emoji. React to messages with this emoji to upvote them.\n`;
+  output += `\`${commandPrefix}config server set downvote emoji _your custom emoji here_\`: Sets the server specific downvote emoji. React to messages with this emoji to downvote them.\n`;
+  output += "(Both emojis can be the same, but thats kinda stupid)";
+
 
   message.channel.send(output);
 }
