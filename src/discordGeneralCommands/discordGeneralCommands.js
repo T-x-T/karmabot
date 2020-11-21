@@ -37,11 +37,11 @@ export default (_client, _commandPrefix) => {
         }
       }
     });
-    
+
     if(channel){
       channel.send(message);
     }else{
-      guild.owner.send(message);
+      (await client.users.fetch(guild.ownerID)).send(message);
     }
   });
 }
