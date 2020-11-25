@@ -219,7 +219,7 @@ async function top(message, subcommand){
   }else{
     //+karma top: show top 10 users current guild by guild karma
     try {
-      let topList = await karmaRetriever.getTopUsersOfGuildTotal(10, message.guild.id);
+      let topList = await karmaRetriever.getTopUsersOfGuild(10, message.guild.id);
       let output = `Showing Top 10 users of ${message.guild.name} based on their karma gained in this server:\n`;
       output += await convertTopListToTable(topList, message);
       message.channel.send(output);
