@@ -1,5 +1,6 @@
 node_modules
 .vscode
 .nyc_output
+.nuxt
 config.staging.json
 config.testing.json

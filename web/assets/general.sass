@@ -1,0 +1,34 @@
+@import ./colors
+  
+*
+  margin: 0
+  transition-duration: .4s
+
+body
+  background-color: $darkest
+  color: $brighter
+
+a, p, h1, h2, h3, h4, h5, h6, th, td
+  text-decoration: none
+  color: white
+  font-family: sans-serif
+
+.topListTable
+  border-collapse: separate
+  border-spacing: 0px
+  white-space: nowrap
+  align-self: center
+  @media screen and ($smallScreen)
+    width: 100%
+  th
+    font-size: 30pt
+    text-align: center
+    border-bottom: 2px solid $bright
+    background-color: $darker
+  td
+    font-size: 20pt
+    text-align: center
+    min-width: 200px
+  tr
+    &:nth-child(even) td
+      background-color: $darker

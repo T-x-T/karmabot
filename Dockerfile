@@ -11,7 +11,7 @@ ENV NPM_CONFIG_LOGLEVEL warn
 RUN npm install --production
 
 # expose port
-EXPOSE 4000
+EXPOSE 4004
 
 
 
