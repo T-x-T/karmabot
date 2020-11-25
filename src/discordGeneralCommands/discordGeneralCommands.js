@@ -91,6 +91,7 @@ function rank(message){
   output += `\`${commandPrefix}rank server @mention\`: Show rank in the current server of mentioned user\n`; 
   output += `\`${commandPrefix}rank server total\`: Show your rank in the current server based on your global karma\n`; 
   output += `\`${commandPrefix}rank server total @mention\`: Show rank in the current server based on global karma of mentioned user\n`; 
+  output += `\`${commandPrefix}rank server global\`: Show rank of the current server\n`; 
   
   message.channel.send(output);
 }
