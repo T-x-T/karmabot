@@ -12,7 +12,20 @@ import {exec} from "child_process";
 global.ENVIRONMENT = process.env.NODE_ENV ? process.env.NODE_ENV : "staging";
 global.CONFIG = JSON.parse(fs.readFileSync(`./config.${global.ENVIRONMENT}.json`));
 
-exec("npm run nuxt_start");
+try{
+  exec("npm run nuxt_start", (err, stdOut, stdErr) => {
+    if(err) {
+      console.log(err);
+    } else {
+      console.log("nuxt started");
+    }
+    if(stdOut) console.log("StdOut:", stdOut);
+    if(stdErr) console.log("StdErr:",stdErr);
+  });
+}catch(e){
+  console.log("Couldnt start nuxt:", e)
+}
+//exec("nuxt start -c nuxt.config.mjs -H 0.0.0.0 -p 4004")
 setupApiWebserver(global.CONFIG.apiPort);
 
 const discordClient = new Discord.Client({

@@ -8,10 +8,11 @@ COPY . .
 
 # Install app dependencies
 ENV NPM_CONFIG_LOGLEVEL warn
-RUN npm install --production
+RUN npm install --production && npm run nuxt_build
 
 # expose port
 EXPOSE 4004
+EXPOSE 4005
 
 
 

@@ -11,6 +11,7 @@
       <div id="topListSpacer"></div>
       <TopListGuilds class="topList" />
     </div>
+    <Footer />
   </main>
 </template>
 
