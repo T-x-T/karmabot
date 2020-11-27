@@ -20,7 +20,11 @@ async function getTopUsers(req){
 
   let userTags = {};
   await Promise.all(output.map(async element => {
-    userTags[element.userId] = await discordFetcher.getUserTagById(element.userId);
+    try{
+      userTags[element.userId] = await discordFetcher.getUserTagById(element.userId);
+    }catch(e){
+      userTags[element.userId] = "deleted";
+    }
   }));
 
   for(let i = 0; i < output.length; i++){
@@ -37,7 +41,11 @@ async function getTopGuilds(req){
 
   let guildNames = {};
   await Promise.all(output.map(async element => {
-    guildNames[element.guildId] = await discordFetcher.getGuildNameById(element.guildId);
+    try{
+      guildNames[element.guildId] = await discordFetcher.getGuildNameById(element.guildId);
+    }catch(e){
+      guildNames[element.guildId] = "deleted";
+    }
   }));
 
   for(let i = 0; i < output.length; i++){

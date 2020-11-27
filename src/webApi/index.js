@@ -22,6 +22,7 @@ async function listener(req, res){
     }catch(e){
       res.writeHead(500);
       res.end(JSON.stringify({error: e.message}));
+      console.log(e);
     }
   }else{
     res.writeHead(404);
