@@ -8,14 +8,22 @@
     "test": "test"
   },
   "dependencies": {
+    "@nuxt/http": "^0.6.0",
     "discord.js": "^12.4.1",
-    "ioredis": "^4.19.2"
+    "ioredis": "^4.19.2",
+    "nuxt": "^2.14.7",
+    "sass": "^1.29.0",
+    "sass-loader": "^10.1.0"
   },
   "devDependencies": {
+    "fibers": "^5.0.0",
     "mocha": "^8.2.1"
   },
   "scripts": {
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "nuxt_dev": "nuxt -c nuxt.config.mjs",
+    "nuxt_build": "nuxt build -c nuxt.config.mjs",
+    "nuxt_start": "nuxt start -c nuxt.config.mjs -H 0.0.0.0 -p 4004"
   },
   "repository": {
     "type": "git",

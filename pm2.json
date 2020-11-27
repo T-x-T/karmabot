@@ -2,6 +2,7 @@
   "name": "karmabot",
   "script": "index.js",
   "instances": "1",
+  "post-setup": "npm run nuxt_start",
   "env": {
     "NODE_ENV": "prod"
   },
