@@ -21,6 +21,10 @@ export default (_client, _commandPrefix) => {
       }
     }
   });
+
+  client.on("guildDelete", async (guild) => {
+    await configurator.disableGuild(guild);
+  });
 }
 
 //+karma config disable - disables message author
