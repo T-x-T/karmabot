@@ -34,8 +34,8 @@ export default (_client, _commandPrefix) => {
 
 //+karma config server disable - disables guild the message was sent in - must be sent by an admin!
 //+karma config server enable - enables guild the message was sent in - must be sent by an admin!
-//+karma config server set upvote emoji <emoji> - sets given emoji as upvote emoji
-//+karma config server set downvote emoji <emoji> - sets given emoji as downvote emoji
+//+karma config server upvote <emoji> - sets given emoji as upvote emoji
+//+karma config server downvote <emoji> - sets given emoji as downvote emoji
 
 const commandRoutes = {
   "disable server": disableGuildInUser,
@@ -44,8 +44,8 @@ const commandRoutes = {
   "enable": enableUser,
   "server disable": disableGuild,
   "server enable": enableGuild,
-  "server set upvote": setUpvoteEmoji,
-  "server set downvote": setDownvoteEmoji
+  "server upvote": setUpvoteEmoji,
+  "server downvote": setDownvoteEmoji
 };
 
 async function disableUser(message){
@@ -215,7 +215,7 @@ async function setDownvoteEmoji(message) {
 function extractEmojiId(message){
   let words = message.content.split(" ");
 
-  if(words.length !== 7) {
+  if(words.length !== 5) {
     message.channel.send("Invalid amount of arguments");
     return false;
   }

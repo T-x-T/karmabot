@@ -114,8 +114,8 @@ function config(message) {
   
   output += "Server config commands (must be sent by an admin):"
   output += `\`${commandPrefix}config server disable/enable\`: Disables/Enables the current server, this will stop showing any output specific to this server.\n`;
-  output += `\`${commandPrefix}config server set upvote emoji _your custom emoji here_\`: Sets the server specific upvote emoji. React to messages with this emoji to upvote them.\n`;
-  output += `\`${commandPrefix}config server set downvote emoji _your custom emoji here_\`: Sets the server specific downvote emoji. React to messages with this emoji to downvote them.\n`;
+  output += `\`${commandPrefix}config server upvote _your custom emoji here_\`: Sets the server specific upvote emoji. You can also write default instead of a custom emoji. This will add a custom emoji to your server. React to messages with this emoji to upvote them.\n`;
+  output += `\`${commandPrefix}config server downvote _your custom emoji here_\`: Sets the server specific downvote emoji. You can also write default instead of a custom emoji. This will add a custom emoji to your server. React to messages with this emoji to downvote them.\n`;
   output += "(Both emojis can be the same, but thats kinda stupid)";
 
 
