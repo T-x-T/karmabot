@@ -16,7 +16,7 @@
           <td>{{item.karma}}</td>
           <td>{{item.guildName}}</td>
           <td>{{item.memberCount}}</td>
-          <td>{{(item.karma / item.memberCount).toFixed(2)}}</td>
+          <td>{{Number.isSafeInteger(Number.parseInt(item.karma / item.memberCount)) ? (item.karma / item.memberCount).toFixed(2) : 0}}</td>
         </tr>
       </tbody>
     </table>
@@ -32,7 +32,7 @@ export default {
   },
 
   async fetch(){
-    this.topList = await this.$http.$get("http://localhost:4005/api/v1/toplists/guilds");
+    this.topList = await this.$http.$get("https://thetxt.io/api/v1/toplists/guilds");
   }
 }
 </script>
