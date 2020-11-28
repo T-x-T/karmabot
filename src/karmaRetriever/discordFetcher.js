@@ -11,5 +11,9 @@ export default {
 
   async getGuildNameById(guildId){
     return (await client.guilds.fetch(guildId)).name;
+  },
+
+  async getGuildMemberCount(guildId){
+    return (await client.guilds.fetch(guildId)).memberCount;
   }
 }

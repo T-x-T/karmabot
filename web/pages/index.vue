@@ -7,9 +7,15 @@
       </div>
     </div>
     <div id="topListBox">
-      <TopListUsers class="topList" />
+      <div>
+        <h1 class="accent">Top Users:</h1>
+        <TopListUsers class="topList" />
+      </div>
       <div id="topListSpacer"></div>
-      <TopListGuilds class="topList" />
+      <div>
+        <h1 class="accent">Top Servers:</h1>
+        <TopListGuilds class="topList" />
+      </div>
     </div>
     <Footer />
   </main>

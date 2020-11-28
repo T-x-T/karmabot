@@ -6,6 +6,8 @@
           <th>Rank</th>
           <th>Karma</th>
           <th>Server</th>
+          <th>Members</th>
+          <th>Karma per Member</th>
         </tr>
       </thead>
       <tbody>
@@ -13,6 +15,8 @@
           <td>{{index + 1}}</td>
           <td>{{item.karma}}</td>
           <td>{{item.guildName}}</td>
+          <td>{{item.memberCount}}</td>
+          <td>{{(item.karma / item.memberCount).toFixed(2)}}</td>
         </tr>
       </tbody>
     </table>
@@ -28,7 +32,7 @@ export default {
   },
 
   async fetch(){
-    this.topList = await this.$http.$get("https://thetxt.io/api/v1/toplists/guilds");
+    this.topList = await this.$http.$get("http://localhost:4005/api/v1/toplists/guilds");
   }
 }
 </script>

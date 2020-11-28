@@ -40,16 +40,20 @@ async function getTopGuilds(req){
   output = await karmaRetriever.getTopGuilds(100);
 
   let guildNames = {};
+  let memberCounts = {};
   await Promise.all(output.map(async element => {
     try{
       guildNames[element.guildId] = await discordFetcher.getGuildNameById(element.guildId);
+      memberCounts[element.guildId] = await discordFetcher.getGuildMemberCount(element.guildId);
     }catch(e){
       guildNames[element.guildId] = "deleted";
+      memberCounts[element.guildId] = 0;
     }
   }));
 
   for(let i = 0; i < output.length; i++){
     output[i].guildName = guildNames[output[i].guildId];
+    output[i].memberCount = memberCounts[output[i].guildId];
     delete output[i].guildId;
   }
 
