@@ -38,7 +38,8 @@ async function commonValidVoteTasks(srcUserId, targetUserId, guildId){
   await Promise.all([
     karmaWriter.addVoteTimestamp(srcUserId),
     karmaWriter.addUserToGuildUserListIfNotPresent(targetUserId, guildId),
-    karmaWriter.addToUsersIfNotPresent(targetUserId)
+    karmaWriter.addToUsersIfNotPresent(targetUserId),
+    karmaWriter.addToGuildIfNotPresent(guildId)
   ]);
 }
 

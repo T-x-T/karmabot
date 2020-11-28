@@ -144,6 +144,12 @@ export default function(redisIp, redisPort){
       let res = await redis.sismember("users", targetUserId);
       assert.strictEqual(res, 1);
     });
+
+    it("adds guildId to guilds", async function(){
+      await upvote(srcUserId, targetUserId, guildId);
+      let res = await redis.sismember("guilds", guildId);
+      assert.strictEqual(res, 1);
+    });
   });
 
   describe("downvote", function(){
@@ -250,6 +256,12 @@ export default function(redisIp, redisPort){
     it("adds userid to users", async function() {
       await downvote(srcUserId, targetUserId, guildId);
       let res = await redis.sismember("users", targetUserId);
+      assert.strictEqual(res, 1);
+    });
+
+    it("adds guildId to guilds", async function() {
+      await upvote(srcUserId, targetUserId, guildId);
+      let res = await redis.sismember("guilds", guildId);
       assert.strictEqual(res, 1);
     });
   });
