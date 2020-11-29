@@ -23,17 +23,6 @@ export default (_client, _commandPrefix) => {
   });
 }
 
-//Commands:
-//+karma show [@mention]: show karma of author or mentioned user
-//+karma show serverkarma [@mention]: show karma in current guild of author or mentioned user
-//+karma show server: show total karma of current server
-//+karma rank [@mention]: show total rank of author or mentioned user
-//+karma rank server total [@mention]: show total rank of author or mentioned user
-//+karma rank server global: show rank of current guild
-//+karma rank server [@mention]: show rank in server of author or mentioned user
-//+karma top: show top 10 users current guild by guild karma
-//+karma top total: show top 10 users in current guild by total karma
-
 const commandRoutes = {
   show: show,
   rank: rank,
@@ -50,7 +39,7 @@ async function show(message, subcommand){
       const embed = new Discord.MessageEmbed()
         .setColor("#000000")
         .setTitle(karma)
-        .setDescription("Sum of all karma received in server")
+        .setDescription("Sum of all karma of current server")
         .addField("server", message.guild.name, true)
         .addField("members", message.guild.memberCount, true)
         .setTimestamp()
@@ -69,7 +58,7 @@ async function show(message, subcommand){
       const embed = new Discord.MessageEmbed()
         .setColor("#000000")
         .setTitle(karma)
-        .setDescription("Karma in server")
+        .setDescription("Karma of user in current server")
         .addField("user", `<@${targetUser}>`, true)
         .addField("server", message.guild.name, true)
         .setTimestamp()
@@ -88,7 +77,7 @@ async function show(message, subcommand){
       const embed = new Discord.MessageEmbed()
         .setColor("#000000")
         .setTitle(karma)
-        .setDescription("Karma received across all servers")
+        .setDescription("Karma of user across all servers")
         .addField("user", `<@${targetUser}>`, true)
         .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
         .setTimestamp()
@@ -106,15 +95,15 @@ async function show(message, subcommand){
 async function rank(message, subcommand){
   const targetUser = message.mentions.users.first() ? message.mentions.users.first().id : message.author.id;
 
-  if(subcommand.startsWith("server total")){
-    //+karma rank server total [@mention]: show total rank of author or mentioned user
+  if(subcommand.startsWith("server global")){
+    //+karma rank server global [@mention]: show global rank of author or mentioned user
     try{
       let rank = await karmaRetriever.getTotalRankOfUser(targetUser);
       let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
       const embed = new Discord.MessageEmbed()
         .setColor("#000000")
         .setTitle(rank)
-        .setDescription("Rank of users in this server by karma across all guilds")
+        .setDescription("Rank of users from current server by their global karma")
         .addField("karma", karma)
         .addField("user", `<@${targetUser}>`, true)
         .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
@@ -131,15 +120,15 @@ async function rank(message, subcommand){
         message.channel.send(`Oopsie, something went wrong: ${e.message}`);
       }
     }
-  }else if(subcommand.startsWith("server global")){
-    //+karma rank server global: show rank of current guild
+  }else if(subcommand.startsWith("server total")){
+    //+karma rank server total: show rank of current guild
     try {
       let rank = await karmaRetriever.getTotalRankOfGuild(message.guild.id);
       let karma = await karmaRetriever.getTotalKarmaOfGuild(message.guild.id);
       const embed = new Discord.MessageEmbed()
         .setColor("#000000")
         .setTitle(rank)
-        .setDescription("Rank of server counting all karma received in server")
+        .setDescription("Rank of servers by their karma")
         .addField("karma", karma)
         .addField("server", message.guild.name, true)
         .addField("members", message.guild.memberCount, true)
@@ -160,7 +149,7 @@ async function rank(message, subcommand){
       const embed = new Discord.MessageEmbed()
         .setColor("#000000")
         .setTitle(rank)
-        .setDescription("Rank of users in this server by karma in this server")
+        .setDescription("Rank of users by their karma in current server")
         .addField("karma", karma)
         .addField("user", `<@${targetUser}>`, true)
         .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
@@ -185,7 +174,7 @@ async function rank(message, subcommand){
       const embed = new Discord.MessageEmbed()
         .setColor("#000000")
         .setTitle(rank)
-        .setDescription("Rank of users globally by karma")
+        .setDescription("Rank of all users by their global karma")
         .addField("karma", karma)
         .addField("user", `<@${targetUser}>`, true)
         .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
@@ -206,11 +195,11 @@ async function rank(message, subcommand){
 }
 
 async function top(message, subcommand){
-  if(subcommand.startsWith("total")){
-    //+karma top total: show top 10 users in current guild by total karma
+  if(subcommand.startsWith("global")){
+    //+karma top global: show top 10 users in current guild by global karma
     try{
       let topList = await karmaRetriever.getTopUsersOfGuildTotal(10, message.guild.id);
-      let output = `Showing Top 10 users of ${message.guild.name} based on their total karma gained across all servers:\n`;
+      let output = `Showing Top 10 users of ${message.guild.name} based on their global karma:\n`;
       output += await convertTopListToTable(topList, message);
       message.channel.send(output);
     }catch(e){
@@ -220,7 +209,7 @@ async function top(message, subcommand){
     //+karma top: show top 10 users current guild by guild karma
     try {
       let topList = await karmaRetriever.getTopUsersOfGuild(10, message.guild.id);
-      let output = `Showing Top 10 users of ${message.guild.name} based on their karma gained in this server:\n`;
+      let output = `Showing Top 10 users of ${message.guild.name} based on their karma in current server:\n`;
       output += await convertTopListToTable(topList, message);
       message.channel.send(output);
     } catch(e) {

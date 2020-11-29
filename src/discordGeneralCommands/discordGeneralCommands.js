@@ -75,9 +75,9 @@ function show(message){
 
   output += `\`${commandPrefix}show\`: Show your global karma\n`; 
   output += `\`${commandPrefix}show @mention\`: Show global karma of mentioned user\n`; 
-  output += `\`${commandPrefix}show serverkarma\`: Show your server karma\n`; 
-  output += `\`${commandPrefix}show serverkarma @mention\`: Show server karma of mentioned user\n`; 
-  output += `\`${commandPrefix}show server\`: Show karma of server\n`; 
+  output += `\`${commandPrefix}show server\`: Show your server karma\n`; 
+  output += `\`${commandPrefix}show server @mention\`: Show server karma of mentioned user\n`; 
+  output += `\`${commandPrefix}show server total\`: Show karma of server\n`; 
 
   message.channel.send(output);
 }
@@ -89,9 +89,9 @@ function rank(message){
   output += `\`${commandPrefix}rank @mention\`: Show global rank of mentioned user\n`; 
   output += `\`${commandPrefix}rank server\`: Show your rank in the current server\n`; 
   output += `\`${commandPrefix}rank server @mention\`: Show rank in the current server of mentioned user\n`; 
-  output += `\`${commandPrefix}rank server total\`: Show your rank in the current server based on your global karma\n`; 
-  output += `\`${commandPrefix}rank server total @mention\`: Show rank in the current server based on global karma of mentioned user\n`; 
-  output += `\`${commandPrefix}rank server global\`: Show rank of the current server\n`; 
+  output += `\`${commandPrefix}rank server global\`: Show your rank in the current server based on your global karma\n`; 
+  output += `\`${commandPrefix}rank server global @mention\`: Show rank in the current server based on global karma of mentioned user\n`; 
+  output += `\`${commandPrefix}rank server total\`: Show rank of the current server\n`; 
   
   message.channel.send(output);
 }
@@ -100,7 +100,7 @@ function top(message) {
   let output = "";
 
   output += `\`${commandPrefix}top\`: Show top 10 users in current server\n`;
-  output += `\`${commandPrefix}top total\`: Show top 10 users in current server based on global karma\n`;
+  output += `\`${commandPrefix}top global\`: Show top 10 users in current server based on global karma\n`;
 
   message.channel.send(output);
 }
