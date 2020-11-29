@@ -2,6 +2,9 @@
   <main>
     <Header />
     <div id="topBox">
+      <div id="Introduction">
+        <Introduction />
+      </div>
       <div id="GetStarted">
         <GetStarted />
       </div>
@@ -33,19 +36,24 @@ export default {
 
 <style lang="sass">
 @import ../assets/colors
-#topBox
+#GetStarted
   display: flex
   justify-content: center
   flex-direction: row
   padding-top: 15px
+  width: 100%
 
-#GetStarted
+#Introduction
+  width: 100%
+
+#topBox
   width: 100%
 
 #topListBox
   display: flex
   justify-content: center
   padding-top: 50px
+  padding-bottom: 25px
   @media screen and ($largeScreen)
     flex-direction: row
   @media screen and ($smallScreen)
@@ -56,5 +64,5 @@ export default {
       padding-bottom: 100px
     
   #topListSpacer
-    width: 10%
+    width: 5%
 </style>

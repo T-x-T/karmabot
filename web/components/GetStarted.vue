@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1 class="accent" id="GetStartedHeader">How to get Txt's Karmabot into your server:</h1>
+  <div id="GetStartedWrapper">
+    <h1 class="accent" id="GetStartedHeader">Get Txt's Karmabot</h1>
 
     <div id="GetStartedFlexbox">
       <div class="GetStartedItem">
@@ -9,12 +9,8 @@
       </div>
       <div class="GetStartedItem">
         <h2>Step 2:</h2>
-        <p>Set default upvote emoji</p>
+        <p>Set default vote emojis</p>
         <pre>+karma config server upvote default</pre>
-      </div>
-      <div class="GetStartedItem">
-        <h2>Step 3:</h2>
-        <p>Set default downvote emoji</p>
         <pre>+karma config server downvote default</pre>
       </div>
       <div class="GetStartedItem">
@@ -34,9 +30,15 @@
 <style lang="sass">
 @import ../assets/colors
 
+#GetStartedWrapper
+  width: inherit
+  box-shadow: 0px 15px 10px -10px $bright
+  padding-bottom: 25px
+
 #GetStartedHeader
   margin: 5px
   margin-left: 15px
+  text-align: center
   @media screen and ($smallScreen)
     font-size: 40pt
 
@@ -77,14 +79,10 @@ pre
   @media screen and ($smallScreen)
     font-size: 30pt
 
-.accent
-  color: $bright
-
 #GetStartedFlexbox
   display: flex
   align-items: top
-  padding-bottom: 25px
-  box-shadow: 0px 15px 10px -10px $bright
+  justify-content: space-evenly
   @media screen and ($smallScreen)
     flex-direction: column
   @media screen and ($largeScreen)
@@ -94,6 +92,10 @@ pre
   display: flex
   flex-direction: column
   align-items: center
-  flex-grow: 1
+  padding-left: 25px
+  padding-right: 25px
+  background-color: $darker
+  box-shadow: 0px 0px 10px 10px $darker
+  margin: 15px
    
 </style>

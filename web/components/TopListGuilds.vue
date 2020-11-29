@@ -7,7 +7,7 @@
           <th>Karma</th>
           <th>Server</th>
           <th>Members</th>
-          <th>Karma per Member</th>
+          <th>Karma/Member</th>
         </tr>
       </thead>
       <tbody>
