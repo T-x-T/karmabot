@@ -7,7 +7,7 @@
           <th>Karma</th>
           <th>Server</th>
           <th>Members</th>
-          <th>Karma/Member</th>
+          <th class="hiddenOnMobile">Karma/Member</th>
         </tr>
       </thead>
       <tbody>
@@ -16,7 +16,7 @@
           <td>{{item.karma}}</td>
           <td>{{item.guildName}}</td>
           <td>{{item.memberCount}}</td>
-          <td>{{Number.isSafeInteger(Number.parseInt(item.karma / item.memberCount)) ? (item.karma / item.memberCount).toFixed(2) : 0}}</td>
+          <td class="hiddenOnMobile">{{Number.isSafeInteger(Number.parseInt(item.karma / item.memberCount)) ? (item.karma / item.memberCount).toFixed(2) : 0}}</td>
         </tr>
       </tbody>
     </table>
