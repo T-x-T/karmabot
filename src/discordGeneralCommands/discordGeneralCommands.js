@@ -26,7 +26,7 @@ export default (_client, _commandPrefix) => {
   });
 
   client.on("guildCreate", async guild => {
-    let message = `Thanks for inviting me! I hope that we will have lots of fun together :)\n\nPlease configure your upvote/downvote emoji so I can start tracking karma in this server:\n\`${commandPrefix}config server set <upvote|downvote> emoji default\` Instead of default you can just type a custom server emoji to use your own!\n\nFor more help use \`${commandPrefix}help\` and \`${commandPrefix}info\``;
+    let message = `Thanks for inviting me! I hope that we will have lots of fun together :)\n\nPlease configure your upvote/downvote emoji so I can start tracking karma in this server:\n\`${commandPrefix}config server <upvote|downvote> default\` Instead of default you can just type a custom server emoji to use your own!\n\nFor more help use \`${commandPrefix}help\` and \`${commandPrefix}info\``;
     let channel = guild.systemChannel;
     if(!channel) await (guild.channels.cache.array()).forEach(_channel => {
       if(_channel.name.includes("general")){
