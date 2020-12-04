@@ -179,8 +179,7 @@ export default {
       }else{
         let duplicate = false;
         finalArray.forEach(entry => {
-          if(entry.guildId === res2[0].guildId)
-          duplicate = true;
+          if(entry.guildId === res2[0].guildId) duplicate = true;
         });
 
         if(!duplicate){
