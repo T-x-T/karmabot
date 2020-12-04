@@ -172,15 +172,17 @@ export default {
     //This while loop is necessary to extend the finalArray with more guilds if at least one guild is disabled in res so we still get the desired count
     let offset = 1;
     while(finalArray.length < count) {
-      let res2 = await karmaReader.getTopGuildByIndex(finalArray.length + 1 + offset);
-      if(res2.length === 0) break;
-      if(await configReader.isGuildDisabled(res2[0])) {
+      let nextGuild = await karmaReader.getTopGuildByIndex(finalArray.length + offset + 1);
+      if(nextGuild.length === 0) break;
+      if(await configReader.isGuildDisabled(nextGuild[0])) {
         offset++;
-      }else if(finalArray.find(a => a.guildId === res[0].guildId)){
+      }else if(finalArray.find(a => a.guildId !== nextGuild[0])){
         finalArray.push({
-          karma: parseKarma(res2[1]),
-          guildId: res2[0]
+          karma: parseKarma(nextGuild[1]),
+          guildId: nextGuild[0]
         });
+      }else{
+        offset++;
       }
     }
 

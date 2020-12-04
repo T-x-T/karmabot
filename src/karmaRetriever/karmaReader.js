@@ -49,7 +49,7 @@ export default {
   },
 
   async getTopUserByIndex(index){
-    return await redis.zrevrange("userkarma", index - 1, index, "WITHSCORES");
+    return await redis.zrevrange("userkarma", index - 1, index - 1, "WITHSCORES");
   },
 
   async getTopUsersOfGuild(count, guildId){
@@ -57,7 +57,7 @@ export default {
   },
 
   async getTopUserOfGuildByIndex(index, guildId) {
-    return await redis.zrevrange(`${guildId}:userkarma`, index - 1, index, "WITHSCORES");
+    return await redis.zrevrange(`${guildId}:userkarma`, index - 1, index - 1, "WITHSCORES");
   },
 
   async getTopGuilds(count){
@@ -65,6 +65,6 @@ export default {
   },
 
   async getTopGuildByIndex(index){
-    return await redis.zrevrange("guildkarma", index - 1, index, "WITHSCORES");
+    return await redis.zrevrange("guildkarma", index - 1, index - 1, "WITHSCORES");
   }
 }
