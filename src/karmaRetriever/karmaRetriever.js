@@ -169,6 +169,9 @@ export default {
       }
     }
 
+    console.log("finalArray before adding extra entries to match count:")
+    console.log(finalArray)
+
     //This while loop is necessary to extend the finalArray with more guilds if at least one guild is disabled in res so we still get the desired count
     let offset = 1;
     while(finalArray.length < count) {
@@ -176,15 +179,16 @@ export default {
       if(nextGuild.length === 0) break;
       if(await configReader.isGuildDisabled(nextGuild[0])) {
         offset++;
-      }else if(finalArray.find(a => a.guildId !== nextGuild[0])){
+      }else {
         finalArray.push({
           karma: parseKarma(nextGuild[1]),
           guildId: nextGuild[0]
         });
-      }else{
-        offset++;
       }
     }
+
+    console.log("finalArray after adding extra entries to match count:")
+    console.log(finalArray)
 
     return finalArray;
   }

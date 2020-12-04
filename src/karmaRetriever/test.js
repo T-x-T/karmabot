@@ -755,7 +755,6 @@ export default function(redisIp, redisPort){
       await redis.zadd("guildkarma", 0, guildId + 4);
       await redis.set(`${guildId + 4}:config:disabled`, true);
       let res = await karmaRetriever.getTopGuilds(3);
-      console.log(res)
       assert.strictEqual(res[2].guildId, guildId + 3);
     });
 
