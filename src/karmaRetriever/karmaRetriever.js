@@ -176,11 +176,19 @@ export default {
       if(res2.length === 0) break;
       if(await configReader.isGuildDisabled(res2[0])) {
         offset++;
-      } else {
-        finalArray.push({
-          karma: parseKarma(res2[1]),
-          guildId: res2[0]
+      }else{
+        let duplicate = false;
+        finalArray.forEach(entry => {
+          if(entry.guildId === res2[0].guildId)
+          duplicate = true;
         });
+
+        if(!duplicate){
+          finalArray.push({
+            karma: parseKarma(res2[1]),
+            guildId: res2[0]
+          });
+        }
       }
     }
 
