@@ -29,7 +29,6 @@ async function getTopUsers(req){
 
   for(let i = 0; i < output.length; i++){
     output[i].userTag = userTags[output[i].userId];
-    delete output[i].userId;
   }
 
   return output;
@@ -54,7 +53,6 @@ async function getTopGuilds(req){
   for(let i = 0; i < output.length; i++){
     output[i].guildName = guildNames[output[i].guildId];
     output[i].memberCount = memberCounts[output[i].guildId];
-    delete output[i].guildId;
   }
 
   return output;
