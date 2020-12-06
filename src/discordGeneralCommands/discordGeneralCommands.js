@@ -7,13 +7,22 @@ export default (_client, _commandPrefix) => {
   commandPrefix = _commandPrefix + " ";
   client = _client;
 
+  client.user.setActivity("for your votes", {type: "WATCHING"})
+
   client.on("message", message => {
     let content = message.content.toLowerCase();
     
     if(message.author.bot) return;
-    if(!content.startsWith(commandPrefix + "help") && !content.startsWith(commandPrefix + "info")) return;
+    
+    if(!content.startsWith(commandPrefix + "help") && !content.startsWith(commandPrefix + "info") && content + " " !== commandPrefix) return;
 
     content = content.replace(commandPrefix, "");
+    
+    if(content + " " === commandPrefix){
+      message.channel.send(`Hi, Im your friendly neighbourhood karmabot! To get help please type \`${commandPrefix}help\` or for general info about me \`${commandPrefix}info\`.`);
+      return;
+    }
+
     let command = content.replace("config ", "");
     for(let executor in topics) {
       if(command.startsWith(executor)) {
