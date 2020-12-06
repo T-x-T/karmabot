@@ -5,6 +5,7 @@ import setupKarmaRetriever from "./src/karmaRetriever/index.js";
 import setupConfigurator from "./src/configurator/index.js";
 import setupDiscordGeneralCommands from "./src/discordGeneralCommands/discordGeneralCommands.js";
 import setupApiWebserver from "./src/webApi/index.js";
+import setupHistoryRecorder from "./src/historyRecorder/index.js";
 
 import {exec} from "child_process";
 
@@ -37,7 +38,8 @@ discordClient.login(global.CONFIG.botToken).then(async () => {
     setupKarmaUpdater(discordClient),
     setupKarmaRetriever(discordClient),
     setupConfigurator(discordClient),
-    setupDiscordGeneralCommands(discordClient, global.CONFIG.botPrefix)
+    setupDiscordGeneralCommands(discordClient, global.CONFIG.botPrefix),
+    setupHistoryRecorder(global.CONFIG.redisIp, global.CONFIG.redisPort)
   ]);
   console.log("everything logged in, lets go!");
 });
