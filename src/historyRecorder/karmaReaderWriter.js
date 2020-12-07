@@ -45,10 +45,9 @@ export default {
   async writeUserKarmaHistory(historyObjects){
     const commands = historyObjects.map(historyObject => {
       return [
-        "zadd", `history:${historyObject.userId}:userkarma`, historyObject.timestamp, historyObject.karma
+        "zadd", `history:${historyObject.userId}:userkarma`, historyObject.timestamp, `${historyObject.karma}:${Date.now()}`
       ]
-    }); 
-    console.log(commands)
+    });
     await redis.multi(commands).exec();
   }
 }

@@ -3,6 +3,7 @@ import karmaReaderWriter from "./karmaReaderWriter.js";
 export default {
   async connect(redisIp, redisPort){
     await karmaReaderWriter.connect(redisIp, redisPort);
+    updateUserKarma()
   },
 
   async executeTick(){
@@ -10,7 +11,7 @@ export default {
       updateUserKarma(),
       updateGuildKarma(),
       updateUserKarmaInGuild()
-    ])
+    ]);
   }
 }
 
