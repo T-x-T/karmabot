@@ -1,29 +1,30 @@
 import historyRecorder from "./historyRecorder.js";
 
-let msInHour = 1000 * 60 * 60;
+const msInHour = 1000 * 60 * 60;
 
 export default (redisIp, redisPort) => {
-  historyRecorder(redisIp, redisPort);
+  historyRecorder.connect(redisIp, redisPort);
   startTimerAtNextFullHour();
 }
 
 function startTimerAtNextFullHour(){
-  let lastFullHour = Date.now() - (new Date().getMinutes() * 1000 * 60) - (new Date().getSeconds() * 1000);
-  let nextFullHour = lastFullHour + msInHour;
-  let msTillFullHour = nextFullHour - Date.now();
+  const lastFullHour = Date.now() - (new Date().getMinutes() * 1000 * 60) - (new Date().getSeconds() * 1000);
+  const nextFullHour = lastFullHour + msInHour;
+  const msTillFullHour = nextFullHour - Date.now();
   
+  //Start timer on next full hour
   setTimeout(() => {
-    tick();
     startTimer();
   }, msTillFullHour);
 }
 
 function startTimer(){
+  tick(); //Tick once here because setInterval first executes after delay is up
   setInterval(() => {
     tick();
   }, msInHour);
 }
 
 async function tick(){
-  console.log(new Date())
+  historyRecorder.executeTick();
 }
