@@ -46,6 +46,13 @@ export default {
     return await redis.zrange(`${guildId}:userkarma`, 0, -1, "WITHSCORES");
   },
 
+  async getTotalKarma(){
+    const allGuilds = await this.getAllGuildKarma();
+    let totalKarma = 0;
+    allGuilds.forEach(guild => totalKarma += guild.karma);
+    return totalKarma;
+  },
+
   async getAllGuilds(){
     return await redis.lrange("guilds", 0, -1);
   },
@@ -54,7 +61,7 @@ export default {
     const commands = historyObjects.map(historyObject => {
       return [
         //Needs timestamp in value as well, so we dont get any duplicate values
-        "zadd", `history:${historyObject.userId}:userkarma`, historyObject.timestamp, `${historyObject.karma}:${Date.now()}`
+        "zadd", `history:${historyObject.userId}:userkarma`, historyObject.timestamp, `${historyObject.karma}:${historyObject.timestamp}`
       ];
     });
     await redis.multi(commands).exec();
@@ -64,9 +71,13 @@ export default {
     const commands = historyObjects.map(historyObject => {
       return [
         //Needs timestamp in value as well, so we dont get any duplicate values
-        "zadd", `history:${historyObject.guildId}:guildkarma`, historyObject.timestamp, `${historyObject.karma}:${Date.now()}`
+        "zadd", `history:${historyObject.guildId}:guildkarma`, historyObject.timestamp, `${historyObject.karma}:${historyObject.timestamp}`
       ];
     });
     await redis.multi(commands).exec();
+  },
+
+  async writeTotalKarmaHistory(historyObject){
+    await redis.zadd("history:totalkarma", historyObject.timestamp, `${historyObject.karma}:${Date.now()}`);
   }
 }

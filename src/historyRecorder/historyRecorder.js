@@ -9,7 +9,8 @@ export default {
     await Promise.all([
       updateUserKarma(),
       updateGuildKarma(),
-      updateUserKarmaInGuild()
+      updateUserKarmaInGuild(),
+      updateTotalKarma()
     ]);
   }
 }
@@ -28,4 +29,10 @@ async function updateGuildKarma(){
 
 async function updateUserKarmaInGuild(){
 
+}
+
+async function updateTotalKarma(){
+  const totalKarma = await karmaReaderWriter.getTotalKarma();
+  const historyObject = {timestamp: Date.now(), karma: totalKarma};
+  await karmaReaderWriter.writeTotalKarmaHistory(historyObject);
 }
