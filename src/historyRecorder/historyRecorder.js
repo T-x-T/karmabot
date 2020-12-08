@@ -28,7 +28,12 @@ async function updateGuildKarma(){
 }
 
 async function updateUserKarmaInGuild(){
-
+  const karmaInGuildObjects = await karmaReaderWriter.getAllUserKarmaInAllGuilds();
+  const historyObjects = karmaInGuildObjects.map(a => {
+    a.timestamp = Date.now();
+    return a;
+  });
+  await karmaReaderWriter.writeUserKarmaInGuildHistory(historyObjects);
 }
 
 async function updateTotalKarma(){
