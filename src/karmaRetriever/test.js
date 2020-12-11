@@ -789,4 +789,227 @@ export default function(redisIp, redisPort){
       assert.strictEqual(res.length, 5);
     });
   });
+
+  describe("getTotalKarmaHistory", function(){
+    it("returns empty array with empty database", async function(){
+      let res = await karmaRetriever.getTotalKarmaHistory(10);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns element with correct structure", async function(){
+      const date = Date.now() - 1000;
+      await redis.zadd("history:totalkarma", date, `12:${date}`);
+
+      const res = await karmaRetriever.getTotalKarmaHistory(10);
+
+      assert.strictEqual(res[0].timestamp, date);
+      assert.strictEqual(res[0].karma, 12);
+    });
+
+    it("returns only entries within specified time range", async function(){
+      const date = Date.now() - 1000;
+      const dateOld = Date.now() - (1000 * 60 * 60 * 6);
+      await redis.zadd("history:totalkarma", date, `12:${date}`);
+      await redis.zadd("history:totalkarma", dateOld, `13:${dateOld}`);
+      await redis.zadd("history:totalkarma", date + 1, `14:${date + 1}`);
+
+      const res = await karmaRetriever.getTotalKarmaHistory(5);
+
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[1].karma, 14);
+    });
+  });
+
+  describe("getUserKarmaHistory", function(){
+    it("returns empty array with empty database", async function() {
+      let res = await karmaRetriever.getUserKarmaHistory(10, targetUserId);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns element with correct structure", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd(`history:${targetUserId}:userkarma`, date, `12:${date}`);
+
+      const res = await karmaRetriever.getUserKarmaHistory(10, targetUserId);
+
+      assert.strictEqual(res[0].userId, targetUserId);
+      assert.strictEqual(res[0].timestamp, date);
+      assert.strictEqual(res[0].karma, 12);
+    });
+
+    it("returns only entries within specified time range", async function() {
+      const date = Date.now() - 1000;
+      const dateOld = Date.now() - (1000 * 60 * 60 * 6);
+      await redis.zadd(`history:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${targetUserId}:userkarma`, dateOld, `13:${dateOld}`);
+      await redis.zadd(`history:${targetUserId}:userkarma`, date + 1, `14:${date + 1}`);
+
+      const res = await karmaRetriever.getUserKarmaHistory(5, targetUserId);
+
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[1].karma, 14);
+    });
+
+    it("returns only entries of specified user", async function(){
+      const date = Date.now() - 1000;
+      await redis.zadd(`history:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${targetUserId + 1}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${targetUserId}:userkarma`, date + 1, `12:${date + 1}`);
+
+      const res = await karmaRetriever.getUserKarmaHistory(5, targetUserId);
+
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[0].userId, targetUserId);
+      assert.strictEqual(res[1].karma, 12);
+      assert.strictEqual(res[1].userId, targetUserId);
+      assert.strictEqual(res.length, 2);
+    });
+
+    it("throws when targetUser is disabled", async function() {
+      let date = new Date() - 1000;
+      await redis.set(`${targetUserId}:config:disabled`, true);
+      await redis.zadd(`history:${targetUserId}:userkarma`, date, `12:${date}`);
+      await assert.rejects(async () => await karmaRetriever.getUserKarmaHistory(5, targetUserId), new Error("user is disabled"));
+    });
+  });
+
+  describe("getGuildKarmaHistory", function(){
+    it("returns empty array with empty database", async function() {
+      let res = await karmaRetriever.getGuildKarmaHistory(10, guildId);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns element with correct structure", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd(`history:${guildId}:guildkarma`, date, `12:${date}`);
+
+      const res = await karmaRetriever.getGuildKarmaHistory(10, guildId);
+
+      assert.strictEqual(res[0].guildId, guildId);
+      assert.strictEqual(res[0].timestamp, date);
+      assert.strictEqual(res[0].karma, 12);
+    });
+
+    it("returns only entries within specified time range", async function() {
+      const date = Date.now() - 1000;
+      const dateOld = Date.now() - (1000 * 60 * 60 * 6);
+      await redis.zadd(`history:${guildId}:guildkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId}:guildkarma`, dateOld, `13:${dateOld}`);
+      await redis.zadd(`history:${guildId}:guildkarma`, date + 1, `14:${date + 1}`);
+
+      const res = await karmaRetriever.getGuildKarmaHistory(5, guildId);
+
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[1].karma, 14);
+    });
+
+    it("returns only entries of specified guild", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd(`history:${guildId}:guildkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId + 1}:guildkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId}:guildkarma`, date + 1, `12:${date + 1}`);
+
+      const res = await karmaRetriever.getGuildKarmaHistory(5, guildId);
+
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[0].guildId, guildId);
+      assert.strictEqual(res[1].karma, 12);
+      assert.strictEqual(res[1].guildId, guildId);
+      assert.strictEqual(res.length, 2);
+    });
+
+    it("throws when guild is disabled", async function() {
+      let date = new Date() - 1000;
+      await redis.set(`${guildId}:config:disabled`, true);
+      await redis.zadd(`history:${guildId}:guildkarma`, date, `12:${date}`);
+      await assert.rejects(async () => await karmaRetriever.getGuildKarmaHistory(5, guildId), new Error("guild is disabled"));
+    });
+  });
+
+  describe("getUserInGuildKarmaHistory", function(){
+    it("returns empty array with empty database", async function() {
+      let res = await karmaRetriever.getUserInGuildKarmaHistory(10, targetUserId, guildId);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns element with correct structure", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+
+      const res = await karmaRetriever.getUserInGuildKarmaHistory(10, targetUserId, guildId);
+
+      assert.strictEqual(res[0].userId, targetUserId);
+      assert.strictEqual(res[0].guildId, guildId);
+      assert.strictEqual(res[0].timestamp, date);
+      assert.strictEqual(res[0].karma, 12);
+    });
+
+    it("returns only entries within specified time range", async function() {
+      const date = Date.now() - 1000;
+      const dateOld = Date.now() - (1000 * 60 * 60 * 6);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, dateOld, `13:${dateOld}`);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date + 1, `14:${date + 1}`);
+
+      const res = await karmaRetriever.getUserInGuildKarmaHistory(5, targetUserId, guildId);
+
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[1].karma, 14);
+    });
+
+    it("returns only entries of specified guild", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId + 1}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date + 1, `12:${date + 1}`);
+
+      const res = await karmaRetriever.getUserInGuildKarmaHistory(5, targetUserId, guildId);
+
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[0].guildId, guildId);
+      assert.strictEqual(res[1].karma, 12);
+      assert.strictEqual(res[1].guildId, guildId);
+      assert.strictEqual(res.length, 2);
+    });
+
+    it("returns only entries of specified user", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId}:${targetUserId + 1}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date + 1, `12:${date + 1}`);
+
+      const res = await karmaRetriever.getUserInGuildKarmaHistory(5, targetUserId, guildId);
+
+      assert.strictEqual(res[0].karma, 12);
+      assert.strictEqual(res[0].userId, targetUserId);
+      assert.strictEqual(res[1].karma, 12);
+      assert.strictEqual(res[1].userId, targetUserId);
+      assert.strictEqual(res.length, 2);
+    });
+
+    it("throws when targetUser is disabled", async function() {
+      let date = new Date() - 1000;
+      await redis.set(`${targetUserId}:config:disabled`, true);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await assert.rejects(async () => await karmaRetriever.getUserInGuildKarmaHistory(5, targetUserId, guildId), new Error("user is disabled"));
+    });
+
+    it("throws when guild is disabled", async function() {
+      let date = new Date() - 1000;
+      await redis.set(`${guildId}:config:disabled`, true);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await assert.rejects(async () => await karmaRetriever.getUserInGuildKarmaHistory(5, targetUserId, guildId), new Error("guild is disabled"));
+    });
+
+    it("throws when targetUser has disabled guild", async function(){
+      let date = new Date() - 1000;
+      redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await assert.rejects(async () => await karmaRetriever.getUserInGuildKarmaHistory(5, targetUserId, guildId), new Error("user has disabled guild"));
+    });
+  });
 }
