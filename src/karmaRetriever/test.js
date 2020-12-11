@@ -337,22 +337,22 @@ export default function(redisIp, redisPort){
   });
 
   describe("getTopUsers", function(){
-    it("returns array with 3 entries when count is 3", async function(){
+    async function addExamples(){
       await redis.zadd("userkarma", 10, targetUserId);
       await redis.zadd("userkarma", -10, targetUserId + 1);
       await redis.zadd("userkarma", 6, targetUserId + 2);
       await redis.zadd("userkarma", 0, targetUserId + 3);
       await redis.zadd("userkarma", 0, targetUserId + 4);
+    }
+
+    it("returns array with 3 entries when count is 3", async function(){
+      await addExamples();
       let res = await karmaRetriever.getTopUsers(3);
       assert.strictEqual(res.length, 3);
     });
 
     it("returns array sorted descending by karma with userIds", async function() {
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsers(3);
       assert.strictEqual(res[0].karma, 10);
       assert.strictEqual(res[0].userId, targetUserId);
@@ -361,11 +361,7 @@ export default function(redisIp, redisPort){
     });
 
     it("returns user with higher userId first when there are multiple userIds with the same karma", async function(){
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsers(3);
       assert.strictEqual(res[2].userId, targetUserId + 4);
     });
@@ -376,22 +372,14 @@ export default function(redisIp, redisPort){
     });
 
     it("removes single disabled users from output and gets the next user on the top list", async function(){
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
+      await addExamples();
       await redis.set(`${targetUserId + 4}:config:disabled`, true);
       let res = await karmaRetriever.getTopUsers(3);
       assert.strictEqual(res[2].userId, targetUserId + 3);
     });
 
     it("handles 3 disabled users", async function(){
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
+      await addExamples();
       await redis.set(`${targetUserId}:config:disabled`, true);
       await redis.set(`${targetUserId + 3}:config:disabled`, true);
       await redis.set(`${targetUserId + 4}:config:disabled`, true);
@@ -408,33 +396,29 @@ export default function(redisIp, redisPort){
     });
 
     it("returns all users when count is larger them number of total users", async function(){
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsers(10);
       assert.strictEqual(res.length, 5);
     });
   });
 
   describe("getTopUsersOfGuild", async function(){
-    it("returns array with 3 entries when count is 3", async function() {
+    async function addExamples(){
       await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
       await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
       await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
       await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
       await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+    }
+
+    it("returns array with 3 entries when count is 3", async function() {
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuild(3, guildId);
       assert.strictEqual(res.length, 3);
     });
 
     it("returns array sorted descending by karma with userIds", async function() {
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuild(3, guildId);
       assert.strictEqual(res[0].karma, 10);
       assert.strictEqual(res[0].userId, targetUserId);
@@ -443,11 +427,7 @@ export default function(redisIp, redisPort){
     });
 
     it("returns user with higher userId first when there are multiple userIds with the same karma", async function() {
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuild(3, guildId);
       assert.strictEqual(res[2].userId, targetUserId + 4);
     });
@@ -458,22 +438,14 @@ export default function(redisIp, redisPort){
     });
 
     it("removes single disabled users from output and gets the next user on the top list", async function() {
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await addExamples();
       await redis.set(`${targetUserId + 4}:config:disabled`, true);
       let res = await karmaRetriever.getTopUsersOfGuild(3, guildId);
       assert.strictEqual(res[2].userId, targetUserId + 3);
     });
 
     it("handles 3 disabled users", async function() {
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await addExamples();
       await redis.set(`${targetUserId}:config:disabled`, true);
       await redis.set(`${targetUserId + 3}:config:disabled`, true);
       await redis.set(`${targetUserId + 4}:config:disabled`, true);
@@ -483,54 +455,36 @@ export default function(redisIp, redisPort){
     });
 
     it("returns empty array with count 0", async function() {
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuild(0, guildId);
       assert.strictEqual(res.length, 0);
     });
 
     it("returns all users when count is larger them number of total users", async function() {
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuild(10, guildId);
       assert.strictEqual(res.length, 5);
     });
 
     it("ignores karma in other guilds", async function(){
+      await addExamples();
       await redis.zadd(`${guildId + 1}:userkarma`, 10, targetUserId);
       await redis.zadd(`${guildId + 1}:userkarma`, -10, targetUserId + 1);
       await redis.zadd(`${guildId + 2}:userkarma`, 6, targetUserId);
-      
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
       let res = await karmaRetriever.getTopUsersOfGuild(3, guildId);
       assert.strictEqual(res.length, 3);
       assert.strictEqual(res[0].karma, 10);
     });
 
     it("removes user that disabled guild from output", async function(){
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await addExamples();
       await redis.sadd(`${targetUserId + 4}:config:disabledguilds`, guildId);
       let res = await karmaRetriever.getTopUsersOfGuild(3, guildId);
       assert.strictEqual(res[2].userId, targetUserId + 3);
     });
 
     it("removes 2 users who are disabled and 2 different users who disabled guild from output", async function(){
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
-      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
-      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await addExamples();
       await redis.sadd(`${targetUserId + 1}:config:disabledguilds`, guildId);
       await redis.sadd(`${targetUserId + 3}:config:disabledguilds`, guildId);
       await redis.set(`${targetUserId + 2}:config:disabled`, true);
@@ -541,15 +495,14 @@ export default function(redisIp, redisPort){
     });
 
     it("throws when guild is disabled", async function(){
-      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
-      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
+      await addExamples();
       await redis.set(`${guildId}:config:disabled`, true);
       await assert.rejects(async () => await karmaRetriever.getTopUsersOfGuild(3, guildId), new Error("guild is disabled"));
     });
   });
 
   describe("getTopUsersOfGuildTotal", function(){
-    it("returns array with 3 entries when count is 3", async function() {
+    async function addExamples(){
       await redis.zadd("userkarma", 10, targetUserId);
       await redis.sadd(`${guildId}:users`, targetUserId);
       await redis.zadd("userkarma", -10, targetUserId + 1);
@@ -560,21 +513,16 @@ export default function(redisIp, redisPort){
       await redis.sadd(`${guildId}:users`, targetUserId + 3);
       await redis.zadd("userkarma", 0, targetUserId + 4);
       await redis.sadd(`${guildId}:users`, targetUserId + 4);
+    }
+
+    it("returns array with 3 entries when count is 3", async function() {
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuildTotal(3, guildId);
       assert.strictEqual(res.length, 3);
     });
 
     it("returns array sorted descending by karma with userIds", async function() {
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.sadd(`${guildId}:users`, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.sadd(`${guildId}:users`, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.sadd(`${guildId}:users`, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.sadd(`${guildId}:users`, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
-      await redis.sadd(`${guildId}:users`, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuildTotal(3, guildId);
       assert.strictEqual(res[0].karma, 10);
       assert.strictEqual(res[0].userId, targetUserId);
@@ -583,16 +531,7 @@ export default function(redisIp, redisPort){
     });
 
     it("returns user with higher userId first when there are multiple userIds with the same karma", async function() {
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.sadd(`${guildId}:users`, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.sadd(`${guildId}:users`, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.sadd(`${guildId}:users`, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.sadd(`${guildId}:users`, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
-      await redis.sadd(`${guildId}:users`, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsersOfGuildTotal(3, guildId);
       assert.strictEqual(res[2].userId, targetUserId + 4);
     });
@@ -603,32 +542,14 @@ export default function(redisIp, redisPort){
     });
 
     it("removes single disabled users from output and gets the next user on the top list", async function() {
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.sadd(`${guildId}:users`, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.sadd(`${guildId}:users`, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.sadd(`${guildId}:users`, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.sadd(`${guildId}:users`, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
-      await redis.sadd(`${guildId}:users`, targetUserId + 4);
+      await addExamples();
       await redis.set(`${targetUserId + 4}:config:disabled`, true);
       let res = await karmaRetriever.getTopUsersOfGuildTotal(3, guildId);
       assert.strictEqual(res[2].userId, targetUserId + 3);
     });
 
     it("handles 3 disabled users", async function() {
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.sadd(`${guildId}:users`, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.sadd(`${guildId}:users`, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.sadd(`${guildId}:users`, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.sadd(`${guildId}:users`, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
-      await redis.sadd(`${guildId}:users`, targetUserId + 4);
+      await addExamples();
       await redis.set(`${targetUserId}:config:disabled`, true);
       await redis.set(`${targetUserId + 3}:config:disabled`, true);
       await redis.set(`${targetUserId + 4}:config:disabled`, true);
@@ -647,16 +568,7 @@ export default function(redisIp, redisPort){
     });
 
     it("returns all users when count is larger them number of total users", async function() {
-      await redis.zadd("userkarma", 10, targetUserId);
-      await redis.sadd(`${guildId}:users`, targetUserId);
-      await redis.zadd("userkarma", -10, targetUserId + 1);
-      await redis.sadd(`${guildId}:users`, targetUserId + 1);
-      await redis.zadd("userkarma", 6, targetUserId + 2);
-      await redis.sadd(`${guildId}:users`, targetUserId + 2);
-      await redis.zadd("userkarma", 0, targetUserId + 3);
-      await redis.sadd(`${guildId}:users`, targetUserId + 3);
-      await redis.zadd("userkarma", 0, targetUserId + 4);
-      await redis.sadd(`${guildId}:users`, targetUserId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopUsers(10);
       assert.strictEqual(res.length, 5);
     });
@@ -709,22 +621,22 @@ export default function(redisIp, redisPort){
   });
 
   describe("getTopGuilds", function(){
-    it("returns array with 3 entries when count is 3", async function() {
+    async function addExamples(){
       await redis.zadd("guildkarma", 10, guildId);
       await redis.zadd("guildkarma", -10, guildId + 1);
       await redis.zadd("guildkarma", 6, guildId + 2);
       await redis.zadd("guildkarma", 0, guildId + 3);
       await redis.zadd("guildkarma", 0, guildId + 4);
+    }
+
+    it("returns array with 3 entries when count is 3", async function() {
+      await addExamples();
       let res = await karmaRetriever.getTopGuilds(3);
       assert.strictEqual(res.length, 3);
     });
 
     it("returns array sorted descending by karma with guildIds", async function() {
-      await redis.zadd("guildkarma", 10, guildId);
-      await redis.zadd("guildkarma", -10, guildId + 1);
-      await redis.zadd("guildkarma", 6, guildId + 2);
-      await redis.zadd("guildkarma", 0, guildId + 3);
-      await redis.zadd("guildkarma", 0, guildId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopGuilds(3);
       assert.strictEqual(res[0].karma, 10);
       assert.strictEqual(res[0].guildId, guildId);
@@ -733,11 +645,7 @@ export default function(redisIp, redisPort){
     });
 
     it("returns guild with higher guildId first when there are multiple guildIds with the same karma", async function() {
-      await redis.zadd("guildkarma", 10, guildId);
-      await redis.zadd("guildkarma", -10, guildId + 1);
-      await redis.zadd("guildkarma", 6, guildId + 2);
-      await redis.zadd("guildkarma", 0, guildId + 3);
-      await redis.zadd("guildkarma", 0, guildId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopGuilds(3);
       assert.strictEqual(res[2].guildId, guildId + 4);
     });
@@ -748,22 +656,14 @@ export default function(redisIp, redisPort){
     });
 
     it("removes single disabled guilds from output and gets the next guild on the top list", async function() {
-      await redis.zadd("guildkarma", 10, guildId);
-      await redis.zadd("guildkarma", -10, guildId + 1);
-      await redis.zadd("guildkarma", 6, guildId + 2);
-      await redis.zadd("guildkarma", 0, guildId + 3);
-      await redis.zadd("guildkarma", 0, guildId + 4);
+      await addExamples();
       await redis.set(`${guildId + 4}:config:disabled`, true);
       let res = await karmaRetriever.getTopGuilds(3);
       assert.strictEqual(res[2].guildId, guildId + 3);
     });
 
     it("handles 3 disabled guilds", async function() {
-      await redis.zadd("guildkarma", 10, guildId);
-      await redis.zadd("guildkarma", -10, guildId + 1);
-      await redis.zadd("guildkarma", 6, guildId + 2);
-      await redis.zadd("guildkarma", 0, guildId + 3);
-      await redis.zadd("guildkarma", 0, guildId + 4);
+      await addExamples();
       await redis.set(`${guildId}:config:disabled`, true);
       await redis.set(`${guildId + 3}:config:disabled`, true);
       await redis.set(`${guildId + 4}:config:disabled`, true);
@@ -780,11 +680,7 @@ export default function(redisIp, redisPort){
     });
 
     it("returns all users when count is larger them number of total users", async function() {
-      await redis.zadd("guildkarma", 10, guildId);
-      await redis.zadd("guildkarma", -10, guildId + 1);
-      await redis.zadd("guildkarma", 6, guildId + 2);
-      await redis.zadd("guildkarma", 0, guildId + 3);
-      await redis.zadd("guildkarma", 0, guildId + 4);
+      await addExamples();
       let res = await karmaRetriever.getTopGuilds(10);
       assert.strictEqual(res.length, 5);
     });
