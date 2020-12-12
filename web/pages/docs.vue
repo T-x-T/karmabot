@@ -1,18 +1,9 @@
 <template>
   <div>
     <Header />
-    <div class="centeredColumn">
-      <h1 class="docsElement">Discord Commands</h1>
-      <p class="docsElement">+karma help</p>
-      <h1 class="docsElement">API</h1>
-      <p class="docsElement">Coming soon</p>
-    </div>
+    <iframe src="https://wiki.thetxt.io/en/karmabot" frameborder="0">
+      <a href="https://wiki.thetxt.io/en/karmabot">Couldnt load wiki in iframe, try going there by clicking this</a>
+    </iframe>
     <Footer />
   </div>
 </template>
-
-<style lang="sass">
-.docsElement
-  text-align: center
-  padding-top: 20px
-</style>
