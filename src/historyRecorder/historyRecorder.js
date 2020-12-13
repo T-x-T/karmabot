@@ -1,8 +1,8 @@
-import karmaReaderWriter from "./karmaReaderWriter.js";
+let karmaReaderWriter;
 
 export default {
-  async connect(redisIp, redisPort){
-    await karmaReaderWriter.connect(redisIp, redisPort);
+  connect(_karmaReaderWriter){
+    karmaReaderWriter = _karmaReaderWriter;
   },
 
   async executeTick(){

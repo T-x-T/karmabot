@@ -1,10 +1,9 @@
-import configReader from "./configReader.js";
-import karmaReader from "./karmaReader.js";
+let karmaReader, configReader;
 
 export default {
-  async connect(redisIp, redisPort){
-    await karmaReader.connect(redisIp, redisPort);
-    await configReader.connect(redisIp, redisPort);
+  async connect(_karmaReader, _configReader){
+    karmaReader = _karmaReader;
+    configReader = _configReader;
   },
 
   async getTotalKarmaOfUser(userId){

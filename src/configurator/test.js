@@ -1,10 +1,10 @@
 import assert from "assert";
 
 import Redis from "ioredis";
-import {isRegExp} from "util";
 let redis;
 
 import configurator from "./configurator.js";
+import configReaderWriter from "./configReaderWriter.js";
 
 let targetUserId = "607502693514084352";
 let guildId = "592303011947216896";
@@ -14,7 +14,8 @@ let downvoteEmojiId = "602200572673916942";
 export default function(redisIp, redisPort) {
   before("setup", function() {
     return new Promise(async (resolve, reject) => {
-      await configurator.connect(redisIp, redisPort);
+      await configReaderWriter.connect(redisIp, redisPort);
+      await configurator.connect(configReaderWriter);
       console.log("\t[before] karmaUpdater connected");
 
       redis = new Redis(redisIp, redisPort);

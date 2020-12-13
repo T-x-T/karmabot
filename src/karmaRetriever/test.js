@@ -1,5 +1,8 @@
 import assert from "assert";
 
+import karmaReader from "./karmaReader.js";
+import configReader from "./configReader.js";
+
 import Redis from "ioredis";
 let redis;
 
@@ -12,7 +15,10 @@ let guildId = "592303011947216896";
 export default function(redisIp, redisPort){
   before("setup", function() {
     return new Promise(async (resolve, reject) => {
-      await karmaRetriever.connect(redisIp, redisPort);
+      await karmaReader.connect(redisIp, redisPort);
+      await configReader.connect(redisIp, redisPort);
+      
+      await karmaRetriever.connect(karmaReader, configReader);
       console.log("\t[before] karmaUpdater connected");
 
       redis = new Redis(redisIp, redisPort);

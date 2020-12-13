@@ -11,7 +11,7 @@ import {exec} from "child_process";
 
 
 global.ENVIRONMENT = process.env.NODE_ENV ? process.env.NODE_ENV : "staging";
-global.CONFIG = JSON.parse(fs.readFileSync(`./config.${global.ENVIRONMENT}.json`));
+const config = JSON.parse(fs.readFileSync(`./config.${global.ENVIRONMENT}.json`));
 
 try{
   exec("npm run nuxt_start", (err, stdOut, stdErr) => {
@@ -26,20 +26,20 @@ try{
 }catch(e){
   console.log("Couldnt start nuxt:", e)
 }
-//exec("nuxt start -c nuxt.config.mjs -H 0.0.0.0 -p 4004")
-setupApiWebserver(global.CONFIG.apiPort);
+
+setupApiWebserver(config.apiPort);
 
 const discordClient = new Discord.Client({
   partials: ['USER', 'REACTION', 'MESSAGE']
 });
-discordClient.login(global.CONFIG.botToken).then(async () => {
+discordClient.login(config.botToken).then(async () => {
   console.log("discordClient logged in");
   await Promise.all([
-    setupKarmaUpdater(discordClient),
-    setupKarmaRetriever(discordClient),
-    setupConfigurator(discordClient),
-    setupDiscordGeneralCommands(discordClient, global.CONFIG.botPrefix),
-    setupHistoryRecorder(global.CONFIG.redisIp, global.CONFIG.redisPort)
+    setupKarmaUpdater(discordClient, config.redisIp, config.redisPort),
+    setupKarmaRetriever(discordClient, config.botPrefix, config.redisIp, config.redisPort),
+    setupConfigurator(discordClient, config.botPrefix, config.redisIp, config.redisPort),
+    setupDiscordGeneralCommands(discordClient, config.botPrefix),
+    setupHistoryRecorder(config.redisIp, config.redisPort)
   ]);
   console.log("everything logged in, lets go!");
 });

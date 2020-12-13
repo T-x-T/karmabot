@@ -1,10 +1,11 @@
-import historyRecorder from "./historyRecorder.js";
+let historyRecorder;
 
 const msInHour = 1000 * 60 * 60;
 
-export default (redisIp, redisPort) => {
-  historyRecorder.connect(redisIp, redisPort);
+export default _historyRecorder => {
+  historyRecorder = _historyRecorder;
   startTimerAtNextFullHour();
+  tick()
 }
 
 function startTimerAtNextFullHour(){

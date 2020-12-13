@@ -1,6 +1,9 @@
 import assert from "assert";
 
 import {connect, upvote, downvote, removeUpvote, removeDownvote} from "./karmaUpdater.js";
+import karmaWriter from "./karmaWriter.js";
+import configReader from "./configReader.js";
+
 import Redis from "ioredis";
 let redis;
 
@@ -11,7 +14,10 @@ let guildId = "592303011947216896";
 export default function(redisIp, redisPort){
   before("setup", function(){
     return new Promise(async(resolve, reject) => {
-      await connect(redisIp, redisPort);
+      await karmaWriter.connect(redisIp, redisPort);
+      await configReader.connect(redisIp, redisPort);
+
+      await connect(karmaWriter, configReader);
       console.log("\t[before] karmaUpdater connected");
 
       redis = new Redis(redisIp, redisPort);

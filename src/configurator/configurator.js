@@ -1,8 +1,8 @@
-import configReaderWriter from "./configReaderWriter.js";
+let configReaderWriter;
 
 export default {
-  async connect(redisIp, redisPort){
-    await configReaderWriter.connect(redisIp, redisPort);
+  async connect(_configReaderWriter){
+    configReaderWriter = _configReaderWriter;
   },
 
   async disableUser(userId){

@@ -1,9 +1,8 @@
-import karmaWriter from "./karmaWriter.js";
-import configReader from "./configReader.js";
+let karmaWriter, configReader;
 
-async function connect(redisIp, redisPort){
-  await karmaWriter.connect(redisIp, redisPort);
-  await configReader.connect(redisIp, redisPort);
+async function connect(_karmaWriter, _configReader){
+  karmaWriter = _karmaWriter;
+  configReader = _configReader;
 }
 
 async function upvote(srcUserId, targetUserId, guildId){
