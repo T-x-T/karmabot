@@ -12,9 +12,9 @@ export default async function(req){
     return await getHistoryTotalKarma(req);
   } else if(req.path.startsWith("history/userkarma/")) {
     return await getHistoryUserKarma(req);
-  } else if(req.path.startsWith("history/guildkarma/") && req.path.includes("/totalkarma")) {
+  } else if(req.path.startsWith("history/guild/") && req.path.includes("/totalkarma")) {
     return await getHistoryGuildKarma(req);
-  } else if(req.path.startsWith("history/guildkarma/") && req.path.includes("/userkarma/")) {
+  } else if(req.path.startsWith("history/guild/") && req.path.includes("/userkarma/")) {
     return await getHistoryUserInGuildKarma(req);
   } else {
     throw new Error("API resource doesnt exist in v1 API");
