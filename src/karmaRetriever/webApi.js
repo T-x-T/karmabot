@@ -8,6 +8,8 @@ export default async function(req){
       return await getTopUsers(req);
     case "toplists/guilds":
       return await getTopGuilds(req);
+    case "history/totalkarma":
+      return await getHistoryTotalKarma(req);
     default:
       throw new Error("API resource doesnt exist in v1 API");
   }
@@ -55,5 +57,11 @@ async function getTopGuilds(req){
     output[i].memberCount = memberCounts[output[i].guildId];
   }
 
+  return output;
+}
+
+async function getHistoryTotalKarma(req){
+  const hoursInPast = req.query.hoursInPast ? req.query.hoursInPast : 24 * 7;
+  const output = await karmaRetriever.getTotalKarmaHistory(hoursInPast);
   return output;
 }

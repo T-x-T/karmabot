@@ -1,5 +1,6 @@
 import http from "http";
 import karmaRetriever from "../karmaRetriever/webApi.js";
+import url from "url";
 
 export default function(port){
   let httpServer = http.createServer(listener);
@@ -31,8 +32,11 @@ async function listener(req, res){
 }
 
 function getRequestData(req){
+  const parsedUrl = url.parse(req.url, true);
+
   return {
-    path: req.url,
-    method: req.method
+    path: parsedUrl.pathname,
+    method: req.method,
+    query: parsedUrl.query
   }
 }

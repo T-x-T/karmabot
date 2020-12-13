@@ -5,7 +5,6 @@ const msInHour = 1000 * 60 * 60;
 export default _historyRecorder => {
   historyRecorder = _historyRecorder;
   startTimerAtNextFullHour();
-  tick()
 }
 
 function startTimerAtNextFullHour(){
