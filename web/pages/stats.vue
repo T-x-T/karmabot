@@ -39,6 +39,7 @@ export default {
   justify-content: center
   align-items: center
   flex-direction: column
+  padding-bottom: 40px
 #topbox
   margin: 25px
   button
