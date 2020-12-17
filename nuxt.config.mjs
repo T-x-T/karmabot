@@ -5,9 +5,5 @@ export default {
   modules: [
     "@nuxt/http",
     "@nuxtjs/axios"
-  ],
-  axios: {
-    baseURL: "https://thetxt.io/api/v1",
-    proxy: true
-  }
+  ]
 }
