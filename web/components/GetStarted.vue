@@ -82,6 +82,8 @@ pre
   justify-content: space-evenly
   @media screen and ($smallScreen)
     flex-direction: column
+    padding: 10px
+    width: 100%
   @media screen and ($largeScreen)
     flex-direction: row
 
@@ -94,5 +96,9 @@ pre
   background-color: $darker
   box-shadow: 0px 0px 10px 10px $darker
   width: 20%
+  @media screen and ($smallScreen)
+    width: 100%
+    margin: 10px
+    padding: 10px
    
 </style>

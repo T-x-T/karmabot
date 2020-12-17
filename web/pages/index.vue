@@ -56,10 +56,11 @@ main
   width: 100%
 
 #indexMain
-  display: flex
-  align-items: center
-  justify-content: center
-  flex-flow: column
-  height: 90%
+  @media screen and ($largeScreen)
+    display: flex
+    align-items: center
+    justify-content: center
+    flex-flow: column
+    height: 90%
 
 </style>
