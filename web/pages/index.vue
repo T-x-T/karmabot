@@ -24,6 +24,11 @@ export default {
     return {
       message: "Hello World!"
     }
+  },
+  head() {
+    return {
+      title: "TxT's Karmabot"
+    }
   }
 }
 </script>
