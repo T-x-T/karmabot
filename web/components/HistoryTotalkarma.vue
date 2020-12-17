@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper">
-    <h1 class="accent">Cool charts</h1>
+    <h1 class="accent">History</h1>
     <HistoryTotalkarmaChart
       v-if="loaded"
       style="height:100%"
