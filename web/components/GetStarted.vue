@@ -82,7 +82,8 @@ pre
   justify-content: space-evenly
   @media screen and ($smallScreen)
     flex-direction: column
-    padding: 10px
+    padding-top: 10px
+    padding-bottom: 10px
     width: 100%
   @media screen and ($largeScreen)
     flex-direction: row
@@ -98,7 +99,8 @@ pre
   width: 20%
   @media screen and ($smallScreen)
     width: 100%
-    margin: 10px
+    margin-top: 10px
+    margin-bottom: 10px
     padding: 10px
    
 </style>

@@ -22,7 +22,7 @@
 #IntroductionHeader
   text-align: center
   @media screen and ($smallScreen)
-    font-size: 40pt
+    font-size: 20pt
   h1
     padding-bottom: 25px
 
@@ -40,7 +40,6 @@
     p
       max-width: 20%
   p
-    padding: 0px
     font-size: 25pt
     text-align: center
     background-color: $darker
@@ -48,6 +47,7 @@
     width: 20%
     @media screen and ($smallScreen)
       width: 100%
-      margin: 10px
+      margin-top: 10px
+      margin-bottom: 10px
       padding: 10px
 </style>

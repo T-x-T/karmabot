@@ -80,4 +80,6 @@ div#wrapper
 
 h1
   text-align: center
+  @media screen and ($smallScreen)
+    font-size: 40pt
 </style>

@@ -32,9 +32,12 @@ export default {
 @import ../assets/colors
 
 main
-  height: 100%
-  width: 100%
-  position: absolute
+  @media screen and ($largeScreen)
+    height: 100%
+    width: 100%
+    position: absolute
+  @media screen and ($smallScreen)
+    overflow: hidden
 #GetStarted
   display: flex
   justify-content: center
