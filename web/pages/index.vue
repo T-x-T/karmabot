@@ -8,6 +8,7 @@
         </div>
       </div>
       <div id="History">
+        <h1 class="accent">History</h1>
         <HistoryTotalkarma />
       </div>
       <div id="Introduction">
@@ -62,6 +63,8 @@ main
   margin-top: 1%
   margin-bottom: 1%
   width: 100%
+  h1
+    text-align: center
 
 #indexMain
   @media screen and ($largeScreen)
