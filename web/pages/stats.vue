@@ -15,7 +15,7 @@
         <h1 class="accent">Top Servers:</h1>
         <TopListGuilds class="topList" />
       </div>
-      <div v-if="activeElement === 'historyTotalkarma'">
+      <div class="chart" v-if="activeElement === 'historyTotalkarma'">
         <h1 class="accent">Total Karma History:</h1>
         <HistoryTotalkarma />
       </div>
@@ -51,4 +51,7 @@ export default {
     box-shadow: 0px 0px 5px $bright
 h1
   text-align: center
+
+.chart
+  width: 90%
 </style>
