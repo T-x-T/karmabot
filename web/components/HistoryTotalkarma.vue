@@ -76,9 +76,6 @@ div#wrapper
   padding-left: 1%
   padding-right: 1%
   width: 98%
-
-h1
-  text-align: center
-  @media screen and ($smallScreen)
-    font-size: 40pt
+  position: relative
+  height: 90%
 </style>

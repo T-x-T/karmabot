@@ -63,6 +63,7 @@ main
   margin-top: 1%
   margin-bottom: 1%
   width: 100%
+  height: 50%
   h1
     text-align: center
 

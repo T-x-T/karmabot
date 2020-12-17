@@ -55,4 +55,8 @@ h1
 
 .chart
   width: 90%
+  height: 75%
+
+div
+  width: 100%
 </style>
