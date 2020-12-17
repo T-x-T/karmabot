@@ -6,8 +6,8 @@
     <div id="IntroductionFlexbox">
       <p>Vote on messages</p>
       <p>Receive votes</p>
-      <p>One upvote = Karma increments by one</p>
-      <p>One downvote = Karma decrements by one</p>
+      <p>Gain one karma per upvote</p>
+      <p>Lose one karma per downvote</p>
     </div>
   </div>
 </template>
@@ -16,16 +16,15 @@
 @import ../assets/colors
 
 #IntroductionWrapper
-  box-shadow: 0px 15px 10px -10px $bright
   padding-top: 25px
   padding-bottom: 25px
 
 #IntroductionHeader
-  margin: 5px
-  margin-left: 15px
   text-align: center
   @media screen and ($smallScreen)
     font-size: 40pt
+  h1
+    padding-bottom: 25px
 
 #IntroductionFlexbox
   display: flex
@@ -41,10 +40,10 @@
     p
       max-width: 20%
   p
-    padding: 25px
-    margin: 10px
+    padding: 0px
     font-size: 25pt
     text-align: center
     background-color: $darker
     box-shadow: 0px 0px 10px 10px $darker
+    width: 20%
 </style>

@@ -32,12 +32,10 @@
 
 #GetStartedWrapper
   width: inherit
-  box-shadow: 0px 15px 10px -10px $bright
   padding-bottom: 25px
 
 #GetStartedHeader
-  margin: 5px
-  margin-left: 15px
+  padding-bottom: 25px
   text-align: center
   @media screen and ($smallScreen)
     font-size: 40pt
@@ -45,7 +43,6 @@
 #inviteMe
   font-size: 35pt
   margin-top: 10px
-  padding-top: 10px
   padding-bottom: 10px
   padding-left: 35px
   padding-right: 35px
@@ -96,6 +93,6 @@ pre
   padding-right: 25px
   background-color: $darker
   box-shadow: 0px 0px 10px 10px $darker
-  margin: 15px
+  width: 20%
    
 </style>

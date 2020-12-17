@@ -9,11 +9,15 @@
   },
   "dependencies": {
     "@nuxt/http": "^0.6.0",
+    "@nuxtjs/axios": "^5.12.4",
+    "@nuxtjs/proxy": "^2.1.0",
+    "chart.js": "^2.9.4",
     "discord.js": "^12.4.1",
     "ioredis": "^4.19.2",
     "nuxt": "^2.14.7",
     "sass": "^1.29.0",
-    "sass-loader": "^10.1.0"
+    "sass-loader": "^10.1.0",
+    "vue-chartjs": "^3.5.1"
   },
   "devDependencies": {
     "fibers": "^5.0.0",

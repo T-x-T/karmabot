@@ -5,6 +5,9 @@
         <NuxtLink to="/">Home</NuxtLink>
       </li>
       <li>
+        <NuxtLink to="/stats">Statistics</NuxtLink>
+      </li>
+      <li>
         <NuxtLink to="/docs">Docs</NuxtLink>
       </li>
       <li>

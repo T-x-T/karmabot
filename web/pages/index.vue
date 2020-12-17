@@ -1,23 +1,17 @@
 <template>
   <main>
     <Header />
-    <div id="topBox">
+    <div id="indexMain">
+      <div id="topBox">
+        <div id="GetStarted">
+          <GetStarted />
+        </div>
+      </div>
+      <div id="History">
+        <HistoryTotalkarma />
+      </div>
       <div id="Introduction">
         <Introduction />
-      </div>
-      <div id="GetStarted">
-        <GetStarted />
-      </div>
-    </div>
-    <div id="topListBox">
-      <div>
-        <h1 class="accent">Top Users:</h1>
-        <TopListUsers class="topList" />
-      </div>
-      <div id="topListSpacer"></div>
-      <div>
-        <h1 class="accent">Top Servers:</h1>
-        <TopListGuilds class="topList" />
       </div>
     </div>
     <Footer />
@@ -36,6 +30,11 @@ export default {
 
 <style lang="sass">
 @import ../assets/colors
+
+main
+  height: 100%
+  width: 100%
+  position: absolute
 #GetStarted
   display: flex
   justify-content: center
@@ -49,20 +48,18 @@ export default {
 #topBox
   width: 100%
 
-#topListBox
+#History
+  background-color: $darkester
+  box-shadow: 0px 0px 10px 10px $darkester
+  margin-top: 1%
+  margin-bottom: 1%
+  width: 100%
+
+#indexMain
   display: flex
+  align-items: center
   justify-content: center
-  padding-top: 50px
-  padding-bottom: 25px
-  @media screen and ($largeScreen)
-    flex-direction: row
-  @media screen and ($smallScreen)
-    flex-direction: column
-    #topListSpacer
-      display: none
-    .topList
-      padding-bottom: 100px
-    
-  #topListSpacer
-    width: 5%
+  flex-flow: column
+  height: 90%
+
 </style>

@@ -3,6 +3,11 @@ export default {
   srcDir: "./web",
   css: ["assets/colors", "assets/general"],
   modules: [
-    '@nuxt/http',
-  ]
+    "@nuxt/http",
+    "@nuxtjs/axios"
+  ],
+  axios: {
+    baseURL: "https://thetxt.io/api/v1",
+    proxy: true
+  }
 }
