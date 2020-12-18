@@ -2,7 +2,7 @@ let karmaReaderWriter;
 
 export default {
   connect(_karmaReaderWriter){
-    karmaReaderWriter = _karmaReaderWriter;
+    karmaReaderWriter = _karmaReaderWriter;    
   },
 
   async executeTick(){
@@ -10,7 +10,9 @@ export default {
       updateUserKarma(),
       updateGuildKarma(),
       updateUserKarmaInGuild(),
-      updateTotalKarma()
+      updateTotalKarma(),
+      updateUserCount(),
+      updateGuildCount()
     ]);
   }
 }
@@ -40,4 +42,16 @@ async function updateTotalKarma(){
   const totalKarma = await karmaReaderWriter.getTotalKarma();
   const historyObject = {timestamp: Date.now(), karma: totalKarma};
   await karmaReaderWriter.writeTotalKarmaHistory(historyObject);
+}
+
+async function updateUserCount(){
+  const userCount = await karmaReaderWriter.getUserCount();
+  const historyObject = {timestamp: Date.now(), count: userCount};
+  await karmaReaderWriter.writeUserCountHistory(historyObject);
+}
+
+async function updateGuildCount(){
+  const guildCount = await karmaReaderWriter.getGuildCount();
+  const historyObject = {timestamp: Date.now(), count: guildCount};
+  await karmaReaderWriter.writeGuildCountHistory(historyObject);
 }

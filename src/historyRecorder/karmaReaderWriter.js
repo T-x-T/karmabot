@@ -72,6 +72,14 @@ export default {
     return await redis.smembers("guilds");
   },
 
+  async getUserCount(){
+    return await redis.scard("users");
+  },
+
+  async getGuildCount(){
+    return await redis.scard("guilds");
+  },
+
   async writeUserKarmaHistory(historyObjects){
     const commands = historyObjects.map(historyObject => {
       return [
@@ -104,5 +112,13 @@ export default {
       ];
     });
     await redis.multi(commands).exec();
+  },
+
+  async writeUserCountHistory(historyObject){
+    await redis.zadd("history:usercount", historyObject.timestamp, `${historyObject.count}:${historyObject.timestamp}`);
+  },
+
+  async writeGuildCountHistory(historyObject){
+    await redis.zadd("history:guildcount", historyObject.timestamp, `${historyObject.count}:${historyObject.timestamp}`);
   }
 }
