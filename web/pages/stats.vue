@@ -7,6 +7,9 @@
         <button @click="activeElement='topListGuilds'">Top Guilds</button>
         <button @click="activeElement='historyTotalkarma'">Total Karma History</button>
       </div>
+      <div v-if="activeElement === null">
+        <p>Click one of the buttons above to get started!</p>
+      </div>
       <div v-if="activeElement === 'topListUsers'">
         <h1 class="accent">Top Users:</h1>
         <TopListUsers class="topList" />
@@ -35,11 +38,7 @@ export default {
 <style lang="sass" scoped>
 @import ../assets/colors
 #wrapper
-  display: flex
-  justify-content: center
-  align-items: center
-  flex-direction: column
-  padding-bottom: 40px
+  padding-bottom: 50px
 #topbox
   margin: 25px
   button
@@ -59,4 +58,7 @@ h1
 
 div.chart
   width: 100%
+
+p
+  margin: 35px
 </style>

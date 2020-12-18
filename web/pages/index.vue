@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div id="indexWrapper">
     <Header />
     <div id="indexMain">
       <div id="topBox">
@@ -16,7 +16,7 @@
       </div>
     </div>
     <Footer />
-  </main>
+  </div>
 </template>
 
 <script>
@@ -37,7 +37,7 @@ export default {
 <style lang="sass">
 @import ../assets/colors
 
-main
+#indexWrapper
   @media screen and ($largeScreen)
     height: 100%
     width: 100%
@@ -66,6 +66,8 @@ main
   height: 50%
   h1
     text-align: center
+    @media screen and ($smallScreen)
+      font-size: 40pt
 
 #indexMain
   @media screen and ($largeScreen)

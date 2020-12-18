@@ -76,6 +76,5 @@ div#wrapper
   padding-left: 1%
   padding-right: 1%
   width: 98%
-  position: relative
   height: 90%
 </style>
