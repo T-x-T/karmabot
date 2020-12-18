@@ -16,6 +16,10 @@ export default async function(req){
     return await getHistoryGuildKarma(req);
   } else if(req.path.startsWith("history/guild/") && req.path.includes("/userkarma/")) {
     return await getHistoryUserInGuildKarma(req);
+  } else if(req.path.startsWith("history/usercount")) {
+    return await getHistoryUserCount(req);
+  } else if(req.path.startsWith("history/guildcount")) {
+    return await getHistoryGuildCount(req);
   } else {
     throw new Error("API resource doesnt exist in v1 API");
   }
@@ -88,4 +92,14 @@ async function getHistoryUserInGuildKarma(req){
   const userId = req.path.split("/")[4];
   const guildId = req.path.split("/")[2];
   return await karmaRetriever.getUserInGuildKarmaHistory(hoursInPast, userId, guildId);
+}
+
+async function getHistoryUserCount(req){
+  const hoursInPast = req.query.hoursInPast ? req.query.hoursInPast : 24 * 7;
+  return await karmaRetriever.getUserCountHistory(hoursInPast);
+}
+
+async function getHistoryGuildCount(req){
+  const hoursInPast = req.query.hoursInPast ? req.query.hoursInPast : 24 * 7;
+  return await karmaRetriever.getGuildCountHistory(hoursInPast);
 }

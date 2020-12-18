@@ -237,6 +237,28 @@ export default {
       };
     });
     return hisotryObjects;
+  },
+
+  async getUserCountHistory(hoursInPast){
+    const history = await karmaReader.getUserCountHistory(Date.now() - (hoursInPast * 60 * 60 * 1000));
+    const hisotryObjects = history.map(a => {
+      return {
+        timestamp: a.timestamp,
+        count: a.count
+      };
+    });
+    return hisotryObjects;
+  },
+
+  async getGuildCountHistory(hoursInPast){
+    const history = await karmaReader.getGuildCountHistory(Date.now() - (hoursInPast * 60 * 60 * 1000));
+    const hisotryObjects = history.map(a => {
+      return {
+        timestamp: a.timestamp,
+        count: a.count
+      };
+    });
+    return hisotryObjects;
   }
 }
 function parseRankKarma(karma){

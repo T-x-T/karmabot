@@ -914,4 +914,66 @@ export default function(redisIp, redisPort){
       await assert.rejects(async () => await karmaRetriever.getUserInGuildKarmaHistory(5, targetUserId, guildId), new Error("user has disabled guild"));
     });
   });
+
+  describe("getUserCountHistory", function(){
+    it("returns empty array with empty database", async function() {
+      let res = await karmaRetriever.getUserCountHistory(10);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns element with correct structure", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd("history:usercount", date, `12:${date}`);
+
+      const res = await karmaRetriever.getUserCountHistory(10);
+
+      assert.strictEqual(res[0].count, 12);
+      assert.strictEqual(res[0].timestamp, date);
+    });
+
+    it("returns only entries within specified time range", async function() {
+      const date = Date.now() - 1000;
+      const dateOld = Date.now() - (1000 * 60 * 60 * 6);
+      await redis.zadd("history:usercount", date, `12:${date}`);
+      await redis.zadd("history:usercount", dateOld, `13:${dateOld}`);
+      await redis.zadd("history:usercount", date + 1, `14:${date + 1}`);
+
+      const res = await karmaRetriever.getUserCountHistory(5);
+
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].count, 12);
+      assert.strictEqual(res[1].count, 14);
+    });
+  });
+
+  describe("getGuildCountHistory", function() {
+    it("returns empty array with empty database", async function() {
+      let res = await karmaRetriever.getGuildCountHistory(10);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns element with correct structure", async function() {
+      const date = Date.now() - 1000;
+      await redis.zadd("history:guildcount", date, `12:${date}`);
+
+      const res = await karmaRetriever.getGuildCountHistory(10);
+
+      assert.strictEqual(res[0].count, 12);
+      assert.strictEqual(res[0].timestamp, date);
+    });
+
+    it("returns only entries within specified time range", async function() {
+      const date = Date.now() - 1000;
+      const dateOld = Date.now() - (1000 * 60 * 60 * 6);
+      await redis.zadd("history:guildcount", date, `12:${date}`);
+      await redis.zadd("history:guildcount", dateOld, `13:${dateOld}`);
+      await redis.zadd("history:guildcount", date + 1, `14:${date + 1}`);
+
+      const res = await karmaRetriever.getGuildCountHistory(5);
+
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].count, 12);
+      assert.strictEqual(res[1].count, 14);
+    });
+  });
 }

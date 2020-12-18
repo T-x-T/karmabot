@@ -114,5 +114,29 @@ export default {
       });
     }
     return objects;
+  },
+
+  async getUserCountHistory(since){
+    const res = await redis.zrangebyscore("history:usercount", since, Date.now(), "WITHSCORES");
+    const objects = [];
+    for(let i = 0; i < res.length; i += 2){
+      objects.push({
+        timestamp: Number(res[i + 1]),
+        count: Number(res[i].split(":")[0])
+      });
+    }
+    return objects;
+  },
+
+  async getGuildCountHistory(since){
+    const res = await redis.zrangebyscore("history:guildcount", since, Date.now(), "WITHSCORES");
+    const objects = [];
+    for(let i = 0; i < res.length; i += 2){
+      objects.push({
+        timestamp: Number(res[i + 1]),
+        count: Number(res[i].split(":")[0])
+      });
+    }
+    return objects;
   }
 }
