@@ -4,7 +4,7 @@
     <div id="wrapper">
       <div id="topbox">
         <button @click="activeElement='topListUsers'">Top Users</button>
-        <button @click="activeElement='topListGuilds'">Top Guilds</button>
+        <button @click="activeElement='topListGuilds'">Top Servers</button>
         <button @click="activeElement='historyTotalkarma'">Total Karma History</button>
       </div>
       <div v-if="activeElement === null">
