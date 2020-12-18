@@ -10,11 +10,11 @@
       <div v-if="activeElement === null">
         <p>Click one of the buttons above to get started!</p>
       </div>
-      <div v-if="activeElement === 'topListUsers'">
+      <div class="centered" v-if="activeElement === 'topListUsers'">
         <h1 class="accent">Top Users:</h1>
         <TopListUsers class="topList" />
       </div>
-      <div v-if="activeElement === 'topListGuilds'">
+      <div class="centered" v-if="activeElement === 'topListGuilds'">
         <h1 class="accent">Top Servers:</h1>
         <TopListGuilds class="topList" />
       </div>
@@ -30,7 +30,7 @@
 <script>
 export default {
   data: () => ({
-    activeElement: null
+    activeElement: "topListUsers"
   })
 }
 </script>
@@ -51,6 +51,12 @@ export default {
     box-shadow: 0px 0px 5px $bright
 h1
   text-align: center
+
+.centered
+  display: flex
+  justify-content: center
+  align-content: center
+  flex-direction: column
 
 .chart
   width: 90%

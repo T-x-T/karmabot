@@ -32,3 +32,10 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+#topListUsersDiv
+  display: flex
+  align-content: center
+  justify-content: center
+</style>

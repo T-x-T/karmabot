@@ -36,3 +36,10 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+#topListGuildsDiv
+  display: flex
+  align-content: center
+  justify-content: center
+</style>
