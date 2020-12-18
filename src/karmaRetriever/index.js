@@ -3,6 +3,7 @@ import discordRetrievalCommands from "./discordRetrievalCommands.js";
 import discordFetcher from "./discordFetcher.js";
 import karmaReader from "./karmaReader.js";
 import configReader from "./configReader.js";
+import setupWebApi from "./webApi.js";
 
 export default async (discordClient, botPrefix, redisIp, redisPort) => {
   try{
@@ -13,6 +14,8 @@ export default async (discordClient, botPrefix, redisIp, redisPort) => {
     
     discordRetrievalCommands(discordClient, botPrefix);
     discordFetcher.connect(discordClient);
+
+    setupWebApi();
   }catch(e){
     console.log("karmaRetriever failed to connect to redis:", e);
   }

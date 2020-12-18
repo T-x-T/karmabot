@@ -1,6 +1,8 @@
 import http from "http";
-import karmaRetriever from "../karmaRetriever/webApi.js";
 import url from "url";
+
+import karmaRetriever from "../karmaRetriever/webApi.js";
+import router from "./router.js";
 
 export default function(port){
   let httpServer = http.createServer(listener);
@@ -16,10 +18,16 @@ async function listener(req, res){
 
   //Currently there is only the v1 API
   if(reqData.path.startsWith("/api/v1/")){
+    reqData.path = reqData.path.replace("/api/v1/", "");
     try{
-      let resData = JSON.stringify(await karmaRetriever(reqData))
-      res.writeHead(200);
-      res.end(resData);
+      const resData = await router.route(reqData);
+      if(resData){
+        res.writeHead(200);
+        res.end(JSON.stringify(resData));
+      }else{
+        res.writeHead(404);
+        res.end("{\"error\": \"API resource not found\"}");
+      }
     }catch(e){
       res.writeHead(500);
       res.end(JSON.stringify({error: e.message}));
