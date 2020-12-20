@@ -22,8 +22,13 @@ async function listener(req, res){
     try{
       const resData = await router.route(reqData);
       if(resData){
-        res.writeHead(200);
-        res.end(JSON.stringify(resData));
+        if(resData.hasOwnProperty("statusCode")){
+          res.writeHead(resData.statusCode, resData.payload);
+          res.end();
+        }else{
+          res.writeHead(200);
+          res.end(JSON.stringify(resData));
+        }
       }else{
         res.writeHead(404);
         res.end("{\"error\": \"API resource not found\"}");
@@ -41,10 +46,9 @@ async function listener(req, res){
 
 function getRequestData(req){
   const parsedUrl = url.parse(req.url, true);
-
   return {
     path: parsedUrl.pathname,
     method: req.method,
-    query: parsedUrl.query
+    query: req.url.includes("?") ? JSON.parse(JSON.stringify(parsedUrl.query)) : {} //Hacky fix to add prototype to parsedUrl.query
   }
 }

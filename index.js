@@ -7,6 +7,7 @@ import setupDiscordGeneralCommands from "./src/discordGeneralCommands/discordGen
 import setupApiWebserver from "./src/webApi/index.js";
 import setupHistoryRecorder from "./src/historyRecorder/index.js";
 import setupHistoryRetriever from "./src/historyRetriever/index.js";
+import setupAuth from "./src/auth/index.js";
 
 import {exec} from "child_process";
 
@@ -41,7 +42,8 @@ discordClient.login(config.botToken).then(async () => {
     setupConfigurator(discordClient, config.botPrefix, config.redisIp, config.redisPort),
     setupDiscordGeneralCommands(discordClient, config.botPrefix),
     setupHistoryRecorder(config.redisIp, config.redisPort),
-    setupHistoryRetriever(config.redisIp, config.redisPort)
+    setupHistoryRetriever(config.redisIp, config.redisPort),
+    setupAuth(config.clientId, config.clientSecret, config.redirectUri)
   ]);
   console.log("everything logged in, lets go!");
 });

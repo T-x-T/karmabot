@@ -3,5 +3,8 @@
   "botPrefix": "+karma",
   "redisIp": "127.0.0.1",
   "redisPort": 6379,
-  "apiPort": 4005
+  "apiPort": 4005,
+  "clientId": "discord client id",
+  "clientSecret": "discord client secret",
+  "redirectUri": "discord oauth redirect oauth uri"
 }
