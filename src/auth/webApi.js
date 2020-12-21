@@ -92,11 +92,11 @@ function getUserDataFromAccessToken(access_token){
       res.on("data", (chunk) => resData += chunk);
       res.on("end", () => {
         resData = JSON.parse(resData);
-        const userId = resData.id;
-        if(!userId) {
+        const userData = resData;
+        if(!userData) {
           reject("No userId found in response from Discords API");
         } else {
-          resolve(userId);
+          resolve(userData);
         }
       });
     });
