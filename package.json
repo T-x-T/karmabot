@@ -12,6 +12,7 @@
     "@nuxtjs/axios": "^5.12.4",
     "@nuxtjs/proxy": "^2.1.0",
     "chart.js": "^2.9.4",
+    "cookie-universal-nuxt": "^2.1.4",
     "discord.js": "^12.4.1",
     "ioredis": "^4.19.2",
     "nuxt": "^2.14.7",

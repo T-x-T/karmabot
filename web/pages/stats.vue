@@ -3,12 +3,15 @@
     <Header />
     <div id="wrapper">
       <div id="topbox">
-        <button @click="activeElement='topListUsers'">Top Users</button>
-        <button @click="activeElement='topListGuilds'">Top Servers</button>
-        <button @click="activeElement='historyTotalkarma'">Total Karma History</button>
-      </div>
-      <div v-if="activeElement === null">
-        <p>Click one of the buttons above to get started!</p>
+        <div><button @click="activeElement='topListUsers'">Top Users</button></div>
+        <div><button @click="activeElement='topListGuilds'">Top Servers</button></div>
+        <div><button @click="activeElement='historyTotalkarma'">Total Karma History</button></div>
+        <div><button @click="activeElement='userKarma'">Your Karma</button></div>
+
+        <div id="topboxLoginStart" v-if="loggedIn"><p>You're logged in as {{userName}}</p></div>
+        <div v-if="loggedIn"><button v-if="loggedIn" @click="logout">Logout</button></div>
+
+        <div id="topboxLoginStart" v-if="!loggedIn"><a href="https://discord.com/oauth2/authorize?client_id=779060613590548521&redirect_uri=https%3A%2F%2Fthetxt.io%2Fapi%2Fv1%2Flogin&response_type=code&scope=identify">Login</a></div>
       </div>
       <div class="centered" v-if="activeElement === 'topListUsers'">
         <h1 class="accent">Top Users:</h1>
@@ -22,6 +25,10 @@
         <h1 class="accent">Total Karma History:</h1>
         <HistoryTotalkarma />
       </div>
+      <div class="centered" v-if="activeElement === 'userKarma'">
+        <h1 class="accent">Your Karma:</h1>
+        <PersonalKarmaTable class="topList" :userId="userId" />
+      </div>
     </div>
     <Footer />
   </div>
@@ -30,8 +37,27 @@
 <script>
 export default {
   data: () => ({
-    activeElement: "topListUsers"
-  })
+    activeElement: "topListUsers",
+    loggedIn: false,
+    userName: null,
+    userId: null
+  }),
+  methods: {
+    logout: function() {
+      this.loggedIn = false;
+      this.userName = null;
+      this.userId = null;
+      this.$cookies.remove("userName");
+      this.$cookies.remove("userId");
+    }
+  },
+  mounted (){
+    if(this.$cookies.get("userName")){
+      this.userName = this.$cookies.get("userName");
+      this.userId = this.$cookies.get("userId");
+      this.loggedIn = true;
+    }
+  }
 }
 </script>
 
@@ -41,7 +67,12 @@ export default {
   padding-bottom: 50px
 #topbox
   margin: 25px
-  button
+  display: flex
+  flex-direction: row
+  button:hover
+    cursor: pointer
+    box-shadow: 0px 0px 20px $bright
+  button, p
     margin: 10px
     padding: 10px
     font-size: 20pt
@@ -49,6 +80,10 @@ export default {
     color: white
     border: 2px solid $bright
     box-shadow: 0px 0px 5px $bright
+
+#topboxLoginStart
+  margin-left: auto
+
 h1
   text-align: center
 

@@ -4,6 +4,7 @@ export default {
   css: ["assets/colors", "assets/general"],
   modules: [
     "@nuxt/http",
-    "@nuxtjs/axios"
+    "@nuxtjs/axios",
+    "cookie-universal-nuxt"
   ]
 }

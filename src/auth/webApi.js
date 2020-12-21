@@ -21,7 +21,7 @@ export default (_clientId, _clientSecret, _redirectUri, _baseUrl) => {
         payload: {
           Location: `${baseUrl}/stats`,
           "Set-Cookie": [
-            `discordId=${userData.id};path=/`,
+            `userId=${userData.id};path=/`,
             `userName=${userData.username}#${userData.discriminator};path=/`,
           ],
         },
