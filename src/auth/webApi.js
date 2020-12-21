@@ -17,7 +17,7 @@ export default (_clientId, _clientSecret, _redirectUri, _baseUrl) => {
       if(!req.query.hasOwnProperty("code")) throw new Error("No code provided");
       const userData = await getUserDataFromCode(req.query.code);
       return {
-        statusCode: 302,
+        statusCode: 307,
         payload: {
           Location: `${baseUrl}/stats`,
           "Set-Cookie": [
