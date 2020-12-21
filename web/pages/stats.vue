@@ -6,7 +6,8 @@
         <div><button @click="activeElement='topListUsers'">Top Users</button></div>
         <div><button @click="activeElement='topListGuilds'">Top Servers</button></div>
         <div><button @click="activeElement='historyTotalkarma'">Total Karma History</button></div>
-        <div><button @click="activeElement='userKarma'">Your Karma</button></div>
+        
+        <div v-if="loggedIn"><button @click="activeElement='userKarma'">Your Karma</button></div>
 
         <div id="topboxLoginStart" v-if="loggedIn"><p>You're logged in as {{userName}}</p></div>
         <div v-if="loggedIn"><button v-if="loggedIn" @click="logout">Logout</button></div>
