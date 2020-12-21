@@ -6,5 +6,6 @@
   "apiPort": 4005,
   "clientId": "discord client id",
   "clientSecret": "discord client secret",
-  "redirectUri": "discord oauth redirect oauth uri"
+  "redirectUri": "discord oauth redirect oauth uri",
+  "baseUrl": "http://localhost:3000"
 }

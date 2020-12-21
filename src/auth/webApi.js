@@ -3,23 +3,27 @@ import router from "../webApi/router.js";
 import https from "https";
 import qs from "qs";
 
-let clientId, clientSecret, redirectUri;
+let clientId, clientSecret, redirectUri, baseUrl;
 
-export default (_clientId, _clientSecret, _redirectUri) => {
+export default (_clientId, _clientSecret, _redirectUri, _baseUrl) => {
   clientId = _clientId;
   clientSecret = _clientSecret;
   redirectUri = _redirectUri;
+  baseUrl = _baseUrl;
 
   router.register(
     (req) => req.path.startsWith("login"),
     async (req) => {
       if(!req.query.hasOwnProperty("code")) throw new Error("No code provided");
-      const userId = await getUserIdFromCode(req.query.code);
+      const userData = await getUserDataFromCode(req.query.code);
       return {
         statusCode: 302,
         payload: {
-          Location: "http://localhost:3000/stats",
-          "Set-Cookie": [`discordId=${userId};path=/`],
+          Location: `${baseUrl}/stats`,
+          "Set-Cookie": [
+            `discordId=${userData.id};path=/`,
+            `userName=${userData.username}+${userData.discriminator};path=/`,
+          ],
         },
         contentType: "text/plain"
       };
@@ -27,7 +31,7 @@ export default (_clientId, _clientSecret, _redirectUri) => {
   );
 }
 
-function getUserIdFromCode(code){
+function getUserDataFromCode(code){
   return new Promise((resolve, reject) => {
     const payload = qs.stringify({
       code: code,
@@ -58,7 +62,7 @@ function getUserIdFromCode(code){
         if(!access_token) {
           reject("No access token found in response from Discords API")
         }else{
-          resolve(await getUserIdFromAccessToken(access_token));
+          resolve(await getUserDataFromAccessToken(access_token));
         }
       });
     });
@@ -70,7 +74,7 @@ function getUserIdFromCode(code){
   });
 }
 
-function getUserIdFromAccessToken(access_token){
+function getUserDataFromAccessToken(access_token){
   return new Promise((resolve, reject) => {
     const options = {
       host: "discord.com",
