@@ -22,7 +22,7 @@ export default (_clientId, _clientSecret, _redirectUri, _baseUrl) => {
           Location: `${baseUrl}/stats`,
           "Set-Cookie": [
             `discordId=${userData.id};path=/`,
-            `userName=${userData.username}+${userData.discriminator};path=/`,
+            `userName=${userData.username}#${userData.discriminator};path=/`,
           ],
         },
         contentType: "text/plain"
