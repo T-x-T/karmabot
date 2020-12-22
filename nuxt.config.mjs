@@ -11,9 +11,6 @@ export default {
     proxy: true,
   },
   proxy: {
-    "/api/v1/": "http://localhost:4005"
-  },
-  env: {
-    apiUrl: process.env.NODE_ENV === "prod" ? "https://thetxt.io" : "http://localhost:3000"
+    "/api/v1/": process.env.NODE_ENV === "prod" ? "https://thetxt.io" : "http://localhost:4005"
   }
 }
