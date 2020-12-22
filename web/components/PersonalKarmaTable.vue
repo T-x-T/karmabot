@@ -31,8 +31,9 @@ export default {
     userId: String
   },
   mounted: async function() {
-    this.totalkarma = JSON.parse(JSON.stringify(await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/totalkarma`)).totalkarma);
+    //this.totalkarma = (await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/totalkarma`)).totalkarma;
     this.guildkarma = await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/guildkarma`);
+    this.guildkarma.forEach(x => this.guildkarma += x.guildkarma)
   }
 }
 </script>
