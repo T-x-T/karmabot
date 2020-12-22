@@ -7,18 +7,13 @@ export default {
     "@nuxtjs/axios",
     "cookie-universal-nuxt"
   ],
-/*   axios: {
+  axios: {
     proxy: true,
-    prefix: "/api/v1/",
-    baseURL: "http://localhost:4005",
-    browserBaseURL: "http://localhost:4005"
-  },
-  publicRuntimeConfig: {
-    axios: {
-      baseURL: 'http://localhost:4005'
-    }
   },
   proxy: {
-    "/": "http://localhost:4005"
-  } */
+    "/api/v1/": "http://localhost:4005"
+  },
+  env: {
+    apiUrl: process.env.NODE_ENV === "prod" ? "https://thetxt.io" : "http://localhost:3000"
+  }
 }

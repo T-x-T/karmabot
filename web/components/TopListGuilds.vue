@@ -33,7 +33,7 @@ export default {
 
   async fetch(){
     console.log(this.$cookies.get("userName"))
-    this.topList = await this.$http.$get("https://thetxt.io/api/v1/toplists/guilds");
+    this.topList = await this.$axios.$get("/api/v1/toplists/guilds");
   }
 }
 </script>

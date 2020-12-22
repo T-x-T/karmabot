@@ -28,7 +28,7 @@ export default {
   },
 
   async fetch(){
-    this.topList = await this.$http.$get("https://thetxt.io/api/v1/toplists/users");
+    this.topList = await this.$axios.$get("/api/v1/toplists/users");
   }
 }
 </script>

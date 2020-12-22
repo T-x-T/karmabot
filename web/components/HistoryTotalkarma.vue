@@ -53,7 +53,7 @@ export default {
   }),
   async fetch () {
     try {
-      const res = await this.$axios.$get("https://thetxt.io/api/v1/history/totalkarma?hoursInPast=720");
+      const res = await this.$axios.$get("/api/v1/history/totalkarma?hoursInPast=720");
       const points = res.map(x => x.karma);
       const timestamps = res.map(x => new Date(x.timestamp));
       for(let i = 0; i < points.length; i++){
