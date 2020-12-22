@@ -33,7 +33,7 @@ export default {
   mounted: async function() {
     //this.totalkarma = (await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/totalkarma`)).totalkarma;
     this.guildkarma = await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/guildkarma`);
-    this.guildkarma.forEach(x => this.guildkarma += x.guildkarma)
+    this.guildkarma.forEach(x => this.totalkarma += x.guildkarma)
   }
 }
 </script>
