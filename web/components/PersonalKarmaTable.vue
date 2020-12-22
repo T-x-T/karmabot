@@ -6,10 +6,14 @@
 
 <script>
 export default {
-  data: () => {
-
-  },
-  props: ["userId"]
+  data: () => ({
+    totalkarma: null,
+    guildkarma: []
+  }),
+  props: ["userId"],
+  fetch: async () => {
+    
+  }
 }
 </script>
 

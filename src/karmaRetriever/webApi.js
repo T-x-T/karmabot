@@ -60,5 +60,38 @@ let handlers = [
         return output;
       }
     )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("users") && req.path.includes("totalkarma"),
+      async (req) => {
+        const userId = req.path.split("/")[1];
+        const karma = await karmaRetriever.getTotalKarmaOfUser(userId);
+        return {
+          userId: userId,
+          totalkarma: karma
+        };
+      }
+    )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("users") && req.path.includes("guildkarma"),
+      async (req) => {
+        const userId = req.path.split("/")[1];
+        const entries = await karmaRetriever.getGuildKarmaOfAllGuildsOfUser(userId);
+
+        return await Promise.all(entries.map(async entry => {
+          try{
+            entry.guildName = await discordFetcher.getGuildNameById(entry.guildId);
+          }catch(e){
+            entry.guildName = "deleted";
+          }
+          return entry;
+        }));
+      }
+    )
   }
 ];

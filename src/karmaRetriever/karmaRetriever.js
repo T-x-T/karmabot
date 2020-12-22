@@ -24,6 +24,18 @@ export default {
     return parseKarma(karma);
   },
 
+  async getGuildKarmaOfAllGuildsOfUser(userId){
+    await throwIfUserDisabled(userId);
+    const guildsOfUser = await karmaReader.getGuildsOfUser(userId);
+    const resWithDisabledGuilds = await Promise.all(guildsOfUser.map(async guildId => {
+      if(!await configReader.isGuildDisabled(guildId) && !await configReader.isGuildDisabledInUser(userId, guildId)) return {
+        guildkarma: await this.getTotalKarmaOfUserInGuild(userId, guildId),
+        guildId: guildId
+      }
+    }));
+    return resWithDisabledGuilds.filter(x => x);
+  },
+
   async getTotalRankOfUser(userId){
     await throwIfUserDisabled(userId);
     let karma = await karmaReader.getTotalRankOfUser(userId);

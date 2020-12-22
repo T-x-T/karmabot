@@ -126,6 +126,63 @@ export default function(redisIp, redisPort){
     });
   });
 
+  describe("getGuildKarmaOfAllGuildsOfUser", function(){
+    async function addExamples(){
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId + 2}:users`, targetUserId);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+      await redis.sadd("guilds", guildId + 2);
+      await redis.zincrby(`${guildId}:userkarma`, 3, targetUserId);
+      await redis.zincrby(`${guildId + 2}:userkarma`, 12, targetUserId);
+    }
+
+    it("returns empty array when user has no karma in guilds", async function(){
+      const res = await karmaRetriever.getGuildKarmaOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns correct result with user being in multiple guilds", async function(){
+      await addExamples();
+
+      const res = await karmaRetriever.getGuildKarmaOfAllGuildsOfUser(targetUserId);
+
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].guildkarma, 3);
+      assert.strictEqual(res[0].guildId, guildId);
+      assert.strictEqual(res[1].guildkarma, 12);
+      assert.strictEqual(res[1].guildId, guildId + 2);
+    });
+
+    it("exclude disabled guild", async function() {
+      await redis.set(`${guildId}:config:disabled`, true);
+      await addExamples();
+
+      const res = await karmaRetriever.getGuildKarmaOfAllGuildsOfUser(targetUserId);
+      
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildkarma, 12);
+      assert.strictEqual(res[0].guildId, guildId + 2);
+    });
+
+    it("exclude guilds that are disabled in user", async function() {
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
+      await addExamples();
+
+      const res = await karmaRetriever.getGuildKarmaOfAllGuildsOfUser(targetUserId);
+
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildkarma, 12);
+      assert.strictEqual(res[0].guildId, guildId + 2);
+    });
+
+    it("throw is user is disabled", async function(){
+      await addExamples();
+      await redis.set(`${targetUserId}:config:disabled`, true);
+      await assert.rejects(async () => await karmaRetriever.getGuildKarmaOfAllGuildsOfUser(targetUserId), new Error("user is disabled"));
+    });
+  });
+
   describe("getTotalRankOfUser", function(){
     it("returns correct rank", async function(){
       await redis.zadd("userkarma", 10, targetUserId);
