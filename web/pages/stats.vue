@@ -70,10 +70,10 @@ export default {
   margin: 25px
   display: flex
   flex-direction: row
-  button:hover
+  button:hover, a:hover
     cursor: pointer
     box-shadow: 0px 0px 20px $bright
-  button, p
+  button, p, a
     margin: 10px
     padding: 10px
     font-size: 20pt
