@@ -38,7 +38,7 @@
 <script>
 export default {
   data: () => ({
-    activeElement: "userKarma",
+    activeElement: "topListUsers",
     loggedIn: false,
     userName: null,
     userId: null
