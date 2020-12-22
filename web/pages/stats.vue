@@ -38,7 +38,7 @@
 <script>
 export default {
   data: () => ({
-    activeElement: "topListUsers",
+    activeElement: "userKarma",
     loggedIn: false,
     userName: null,
     userId: null
@@ -55,7 +55,7 @@ export default {
   mounted (){
     if(this.$cookies.get("userName")){
       this.userName = this.$cookies.get("userName");
-      this.userId = this.$cookies.get("userId");
+      this.userId = this.$cookies.get("userId", {parseJSON: false});
       this.loggedIn = true;
     }
   }

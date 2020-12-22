@@ -1,6 +1,23 @@
 <template>
   <div id="wrapper">
-    <p>Hello subject {{userId}}, you found something that will be implemented very soon! Congratulations :)</p>
+    <table class="topListTable">
+      <thead>
+        <tr>
+          <th>Server</th>
+          <th>Karma</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total</td>
+          <td>{{totalkarma}}</td>
+        </tr>
+        <tr v-for="(item, index) in guildkarma" :key="index">
+          <td>{{item.guildName}}</td>
+          <td>{{item.guildkarma}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -8,11 +25,14 @@
 export default {
   data: () => ({
     totalkarma: null,
-    guildkarma: []
+    guildkarma: null
   }),
-  props: ["userId"],
-  fetch: async () => {
-    
+  props: {
+    userId: String
+  },
+  mounted: async function() {
+    this.totalkarma = await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/totalkarma`).totalkarma;
+    this.guildkarma = await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/guildkarma`);
   }
 }
 </script>
