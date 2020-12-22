@@ -3,7 +3,6 @@ export default {
   srcDir: "./web",
   css: ["assets/colors", "assets/general"],
   modules: [
-    "@nuxt/http",
     "@nuxtjs/axios",
     "cookie-universal-nuxt"
   ],

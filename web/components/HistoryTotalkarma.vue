@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper">
-    <HistoryTotalkarmaChart
+    <LineChart
       v-if="loaded"
       style="height:100%"
       :chartdata="chartdata"
@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import HistoryTotalkarmaChart from "./HistoryTotalkarmaChart.vue";
+import LineChart from "./LineChart.vue";
 export default {
-  components: { HistoryTotalkarmaChart },
+  components: { LineChart },
   data: () => ({
     loaded: false,
     options: {
