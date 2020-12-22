@@ -10,7 +10,7 @@
       <tbody>
         <tr>
           <td>Total</td>
-          <td>{{totalkarma}}</td>
+          <td>{{totalkarma.totalkarma}}</td>
         </tr>
         <tr v-for="(item, index) in guildkarma" :key="index">
           <td>{{item.guildName}}</td>
@@ -31,7 +31,7 @@ export default {
     userId: String
   },
   mounted: async function() {
-    this.totalkarma = await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/totalkarma`).totalkarma;
+    this.totalkarma = await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/totalkarma`);
     this.guildkarma = await this.$axios.$get(`https://thetxt.io/api/v1/users/${this.userId}/guildkarma`);
   }
 }
