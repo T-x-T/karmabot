@@ -22,7 +22,7 @@
       <div class="GetStartedItem">
         <h2>Step 4:</h2>
         <p class="accent">Get to voting!</p>
-        <p>Also dont forget to vote for this bot on <a class="accent" href="https://top.gg/bot/779060613590548521" title="https://top.gg/bot/779060613590548521">top.gg</a> ;)</p>
+        <p>Also don't forget to vote for this bot on <a class="accent" href="https://top.gg/bot/779060613590548521" title="https://top.gg/bot/779060613590548521">top.gg</a> ;)</p>
       </div>
     </div>
   </div>
@@ -42,7 +42,7 @@
     font-size: 40pt
 
 #inviteMe
-  font-size: 35pt
+  font-size: 30pt
   margin-top: 10px
   padding-top: 5px
   padding-bottom: 5px
@@ -73,7 +73,7 @@ p
     font-size: 20pt
 
 pre
-  font-size: 15pt
+  font-size: 14pt
   background-color: #202425
   @media screen and ($smallScreen)
     font-size: 30pt

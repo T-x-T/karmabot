@@ -6,7 +6,7 @@
         <img src="~/assets/logo.svg" alt="logo" id="logo">
         <div id="logoTextWrapper">
           <p class="logoText accent">Encourage positive, funny and helpful content in your community using TxT's Karmabot.</p>
-          <p class="logoText">Txt's Karmabot is a Discord bot which adds a karma system to your Discord server, similar to Reddit.<br>Voting is done through reactions, bot commands and this website are used to view lots of stats.</p>
+          <p class="logoText">TxT's Karmabot is a Discord bot which adds a karma system to your Discord server, similar to Reddit.<br>Voting is done through reactions, bot commands and this website are used to view lots of stats.</p>
         </div>
       </div>
       <div id="GetStarted">
@@ -72,7 +72,7 @@ img#logo
 
 .logoText
   text-align: left
-  font-size: 20pt
+  font-size: 15pt
   @media screen and ($smallScreen)
     text-align: center
 
