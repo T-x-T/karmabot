@@ -98,6 +98,7 @@ pre
   padding-left: 20px
   padding-right: 20px
   margin: 10px
+  margin-bottom: 50px
   background-color: $darker
   box-shadow: 0px 0px 10px 10px $darker
   width: 400px

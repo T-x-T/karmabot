@@ -32,11 +32,10 @@ nav
   li
     flex-grow: 0.1
     list-style-type: none
-    padding-bottom: 5px
-    padding-top: 5px
+    padding: 5px
     font-size: 30pt
     @media screen and ($smallScreen)
-      font-size: 60pt
+      font-size: 50pt
     &:hover
       background-color: $darkest
     a
