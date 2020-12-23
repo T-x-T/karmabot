@@ -44,7 +44,8 @@
 #inviteMe
   font-size: 35pt
   margin-top: 10px
-  padding-bottom: 10px
+  padding-top: 5px
+  padding-bottom: 5px
   padding-left: 35px
   padding-right: 35px
   border-radius: 25px
@@ -81,6 +82,7 @@ pre
   display: flex
   align-items: top
   justify-content: space-evenly
+  flex-wrap: wrap
   @media screen and ($smallScreen)
     flex-direction: column
     padding-top: 10px
@@ -93,11 +95,12 @@ pre
   display: flex
   flex-direction: column
   align-items: center
-  padding-left: 25px
-  padding-right: 25px
+  padding-left: 20px
+  padding-right: 20px
+  margin: 10px
   background-color: $darker
   box-shadow: 0px 0px 10px 10px $darker
-  width: 20%
+  width: 400px
   @media screen and ($smallScreen)
     width: 100%
     margin-top: 10px

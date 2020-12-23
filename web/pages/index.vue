@@ -1,18 +1,19 @@
 <template>
   <div id="indexWrapper">
     <Header />
-    <div id="indexMain">
-      <div id="topBox">
+    <div id="indexContent">
+      <div id="indexMain">
+        <p id="introductionText">Txt's Karmabot is a Discord bot which adds a karma system similar to Reddit to your Discord server.<br>It is implemented with reactions, but features lots of commands to view different statistics beautifully.</p>
         <div id="GetStarted">
           <GetStarted />
         </div>
-      </div>
-      <div id="History">
-        <h1 class="accent">History</h1>
-        <HistoryTotalkarma />
-      </div>
-      <div id="Introduction">
-        <Introduction />
+        <div id="History">
+          <h1 class="accent">History</h1>
+          <HistoryTotalkarma />
+        </div>
+        <div id="Introduction">
+          <Introduction />
+        </div>
       </div>
     </div>
     <Footer />
@@ -38,12 +39,13 @@ export default {
 @import ../assets/colors
 
 #indexWrapper
-  @media screen and ($largeScreen)
-    height: 100%
-    width: 100%
-    position: absolute
   @media screen and ($smallScreen)
     overflow: hidden
+
+#indexContent
+  margin-top: 25px
+  padding-bottom: 30px
+
 #GetStarted
   display: flex
   justify-content: center
@@ -51,10 +53,15 @@ export default {
   padding-top: 15px
   width: 100%
 
-#Introduction
-  width: 100%
+#introductionText
+  text-align: center
+  font-size: 20pt
+  @media screen and ($largeScreen)
+    max-width: 50%
+  @media screen and ($smallScreen)
+    max-width: 100%
 
-#topBox
+#Introduction
   width: 100%
 
 #History
