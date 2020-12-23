@@ -14,14 +14,15 @@
         <pre>+karma config server downvote default</pre>
       </div>
       <div class="GetStartedItem">
-        <h2>Step 4:</h2>
+        <h2>Step 3:</h2>
         <p>Look at the help and info</p>
         <pre>+karma help</pre>
         <pre>+karma info</pre>
       </div>
       <div class="GetStartedItem">
-        <h2>Step 5:</h2>
+        <h2>Step 4:</h2>
         <p class="accent">Get to voting!</p>
+        <p>Also dont forget to vote for this bot on <a class="accent" href="https://top.gg/bot/779060613590548521" title="https://top.gg/bot/779060613590548521">top.gg</a> ;)</p>
       </div>
     </div>
   </div>
