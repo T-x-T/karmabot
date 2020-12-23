@@ -2,16 +2,16 @@
   <nav>
     <ul>
       <li>
-        <NuxtLink to="/">Home</NuxtLink>
+        <NuxtLink class="headerLink" to="/">Home</NuxtLink>
       </li>
       <li>
-        <NuxtLink to="/stats">Stats</NuxtLink>
+        <NuxtLink class="headerLink" to="/stats">Stats</NuxtLink>
       </li>
       <li>
-        <NuxtLink to="/docs">Docs</NuxtLink>
+        <NuxtLink class="headerLink" to="/docs">Docs</NuxtLink>
       </li>
       <li>
-        <NuxtLink to="/about">About</NuxtLink>
+        <NuxtLink class="headerLink" to="/about">About</NuxtLink>
       </li>
     </ul>
   </nav>
@@ -32,8 +32,6 @@ nav
   li
     flex-grow: 0.1
     list-style-type: none
-    padding-left: 25px
-    padding-right: 25px
     padding-bottom: 5px
     padding-top: 5px
     font-size: 30pt
@@ -44,4 +42,7 @@ nav
     a
       display: table
       margin: 0 auto
+    .headerLink
+      width: 100%
+      text-align: center  
 </style>
