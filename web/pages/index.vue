@@ -6,7 +6,7 @@
         <img src="~/assets/logo.svg" alt="logo" id="logo">
         <div id="logoTextWrapper">
           <p class="logoText accent">Encourage positive, funny and helpful content in your community using TxT's Karmabot.</p>
-          <p class="logoText">Txt's Karmabot is a Discord bot which adds a karma system to your Discord server, simliar to Reddit.<br>It is implemented with reactions, but features lots of commands to view different statistics beautifully.</p>
+          <p class="logoText">Txt's Karmabot is a Discord bot which adds a karma system to your Discord server, similar to Reddit.<br>Voting is done through reactions, viewing karma and lots of stats can be done both through commands and on this website.</p>
         </div>
       </div>
       <div id="GetStarted">
