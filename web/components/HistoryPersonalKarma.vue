@@ -66,20 +66,22 @@ export default {
           y: pointsTotal[i]
         });
       }
-      for(let i = 0; i < resGuilds.length; i++){
-        let data = [];
-        this.chartdata.datasets.push({
-          data: data,
-          label: resGuilds[i].guildName,
-          borderColor: `rgba(${255 - ((i + 1) * 48)}, ${211 - ((i + 1) * 16)}, ${105 - ((i + 1) * 8)}, 1)`,
-          pointHitRadius: 32,
-          pointRadius: 0
-        });
-        for(let j = 0; j < resGuilds[i].guildkarmaHistory.length; j++){
-          data.push({
-            x: resGuilds[i].guildkarmaHistory[j].timestamp,
-            y: resGuilds[i].guildkarmaHistory[j].karma
+      if(resGuilds.length > 1){
+        for(let i = 0; i < resGuilds.length; i++){
+          let data = [];
+          this.chartdata.datasets.push({
+            data: data,
+            label: resGuilds[i].guildName,
+            borderColor: `rgba(${255 - ((i + 1) * 48)}, ${211 - ((i + 1) * 16)}, ${105 - ((i + 1) * 8)}, 1)`,
+            pointHitRadius: 32,
+            pointRadius: 0
           });
+          for(let j = 0; j < resGuilds[i].guildkarmaHistory.length; j++){
+            data.push({
+              x: resGuilds[i].guildkarmaHistory[j].timestamp,
+              y: resGuilds[i].guildkarmaHistory[j].karma
+            });
+          }
         }
       }
       console.log(this.chartdata)
