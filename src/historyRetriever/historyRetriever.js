@@ -56,6 +56,18 @@ export default {
     });
     return hisotryObjects;
   },
+
+  async getGuildKarmaOfAllGuildsOfUserHistory(hoursInPast, userId){
+    await throwIfUserDisabled(userId);
+    const guildsOfUser = await historyReader.getGuildsOfUser(userId);
+    const resWithDisabledGuilds = await Promise.all(guildsOfUser.map(async (guildId) => {
+      if(!await configReader.isGuildDisabled(guildId) && !await configReader.isGuildDisabledInUser(userId, guildId)) return {
+        guildkarmaHistory: await this.getUserInGuildKarmaHistory(hoursInPast, userId, guildId),
+        guildId: guildId
+      }
+    }));
+    return resWithDisabledGuilds.filter(x => x && x.guildkarmaHistory.length > 0);
+  },
   
   async getUserCountHistory(hoursInPast) {
     const history = await historyReader.getUserCountHistory(Date.now() - (hoursInPast * 60 * 60 * 1000));

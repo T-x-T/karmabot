@@ -86,5 +86,15 @@ export default {
       });
     }
     return objects;
+  },
+
+  async getGuildsOfUser(userId) {
+    const guilds = await redis.smembers("guilds");
+    const guildsFilter = await Promise.all(guilds.map(async guildId => await redis.sismember(`${guildId}:users`, userId)));
+    let guildsOfUser = [];
+    for(let i = 0; i < guilds.length; i++) {
+      if(guildsFilter[i] === 1) guildsOfUser.push(guilds[i]);
+    }
+    return guildsOfUser;
   }
 }

@@ -70,5 +70,16 @@ const handlers = [
         return await historyRetriever.getGuildCountHistory(hoursInPast);
       }
     )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("history/users/") && req.path.includes("guildkarma"),
+      async (req) => {
+        const hoursInPast = req.query.hoursInPast ? req.query.hoursInPast : 24 * 7;
+        const userId = req.path.split("/")[2];
+        return await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(hoursInPast, userId);
+      }
+    )
   }
 ];

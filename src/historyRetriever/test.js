@@ -266,6 +266,83 @@ export default function(redisIp, redisPort) {
     });
   });
 
+  describe("getGuildKarmaOfAllGuildsOfUserHistory", function() {
+    const date = Date.now() - 1000;
+    const dateOld = Date.now() - (1000 * 60 * 60 * 11);
+
+    async function addExamples() {
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId + 1}:${targetUserId}:userkarma`, date, `13:${date}`);
+      await redis.zadd(`history:${guildId + 2}:${targetUserId}:userkarma`, date, `14:${date}`);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId + 2}:users`, targetUserId);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId+2);
+    }
+    async function addExamplesWithOld() {
+      await redis.zadd(`history:${guildId}:${targetUserId}:userkarma`, date, `12:${date}`);
+      await redis.zadd(`history:${guildId + 1}:${targetUserId}:userkarma`, date, `13:${date}`);
+      await redis.zadd(`history:${guildId + 2}:${targetUserId}:userkarma`, dateOld, `14:${dateOld}`);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId + 2}:users`, targetUserId);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId+2);
+    }
+
+    it("returns empty array with empty database", async function() {
+      let res = await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(10, targetUserId);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns element with correct structure", async function() {
+      await addExamples();
+
+      const res = await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(10, targetUserId);
+      
+      assert.strictEqual(res.length, 2);
+      assert.strictEqual(res[0].guildId, guildId);
+      assert.strictEqual(res[1].guildId, guildId + 2);
+      assert.strictEqual(res[0].guildkarmaHistory[0].karma, 12);
+      assert.strictEqual(res[1].guildkarmaHistory[0].karma, 14);
+      assert.strictEqual(res[0].guildkarmaHistory[0].userId, targetUserId);
+      assert.strictEqual(res[1].guildkarmaHistory[0].userId, targetUserId);
+      assert.strictEqual(res[0].guildkarmaHistory[0].guildId, guildId);
+      assert.strictEqual(res[1].guildkarmaHistory[0].guildId, guildId+2);
+    });
+
+    it("returns only entries within specified time range", async function() {
+      await addExamplesWithOld();
+
+      const res = await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(10, targetUserId);
+
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildId, guildId);
+      assert.strictEqual(res[0].guildkarmaHistory[0].karma, 12);
+      assert.strictEqual(res[0].guildkarmaHistory[0].userId, targetUserId);
+      assert.strictEqual(res[0].guildkarmaHistory[0].guildId, guildId);
+    });
+
+    it("throws when targetUser is disabled", async function() {
+      await addExamples();
+      await redis.set(`${targetUserId}:config:disabled`, true);
+      await assert.rejects(async () => await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(10, targetUserId), new Error("user is disabled"));
+    });
+
+    it("exclude guilds that are disabled in user", async function() {
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
+      await addExamples();
+
+      const res = await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(10, targetUserId);
+
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildId, guildId+2);
+      assert.strictEqual(res[0].guildkarmaHistory[0].karma, 14);
+      assert.strictEqual(res[0].guildkarmaHistory[0].userId, targetUserId);
+      assert.strictEqual(res[0].guildkarmaHistory[0].guildId, guildId+2);
+    });
+  });
+
+
   describe("getUserCountHistory", function() {
     it("returns empty array with empty database", async function() {
       let res = await historyRetriever.getUserCountHistory(10);
