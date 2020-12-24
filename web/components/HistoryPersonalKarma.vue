@@ -42,10 +42,10 @@ export default {
       }
     },
     chartdata: {
-      label: "Your Total Karma",
+      label: "Your Karma",
       datasets: [
         {
-          label: "Your Total Karma",
+          label: "Total Karma",
           data: [],
           borderColor: "rgba(255, 211, 105, 1)",
           pointHitRadius: 32,
