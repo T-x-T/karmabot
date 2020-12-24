@@ -1,9 +1,10 @@
 import router from "../webApi/router.js";
 
-let historyRetriever;
+let historyRetriever, discordFetcher;
 
-export default (_historyRetriever) => {
+export default (_historyRetriever, _discordFetcher) => {
   historyRetriever = _historyRetriever;
+  discordFetcher = _discordFetcher;
   handlers.forEach(x => x());
 }
 
@@ -78,7 +79,15 @@ const handlers = [
       async (req) => {
         const hoursInPast = req.query.hoursInPast ? req.query.hoursInPast : 24 * 7;
         const userId = req.path.split("/")[2];
-        return await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(hoursInPast, userId);
+        const resWithoutNames = await historyRetriever.getGuildKarmaOfAllGuildsOfUserHistory(hoursInPast, userId);
+        return await Promise.all(resWithoutNames.map(async (entry) => {
+          try{
+            entry.guildName = await discordFetcher.getGuildNameById(entry.guildId);
+          }catch(e){
+            entry.guildName = "deleted";
+          }
+          return entry;
+        }));
       }
     )
   }

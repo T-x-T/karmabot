@@ -42,7 +42,7 @@ discordClient.login(config.botToken).then(async () => {
     setupConfigurator(discordClient, config.botPrefix, config.redisIp, config.redisPort),
     setupDiscordGeneralCommands(discordClient, config.botPrefix),
     setupHistoryRecorder(config.redisIp, config.redisPort),
-    setupHistoryRetriever(config.redisIp, config.redisPort),
+    setupHistoryRetriever(config.redisIp, config.redisPort, discordClient),
     setupAuth(config.clientId, config.clientSecret, config.redirectUri, config.baseUrl)
   ]);
   console.log("everything logged in, lets go!");
