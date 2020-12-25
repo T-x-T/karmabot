@@ -258,7 +258,7 @@ export default function(redisIp, redisPort){
 
     it("throws when user doesnt exist", async function() {
       await redis.zadd(`${guildId}:userkarma`, 0, targetUserId);
-      await assert.rejects(async () => karmaRetriever.getGuildRankOfUser(targetUserId + 1, guildId), new Error("user not found"));
+      await assert.rejects(async () => await karmaRetriever.getGuildRankOfUser(targetUserId + 1, guildId), new Error("user not found"));
     });
 
     it("throws when user is disabled", async function() {
@@ -277,6 +277,87 @@ export default function(redisIp, redisPort){
       await redis.zadd(`${guildId}:userkarma`, -10, targetUserId);
       await redis.set(`${guildId}:config:disabled`, true);
       await assert.rejects(async () => await karmaRetriever.getGuildRankOfUser(targetUserId, guildId), new Error("guild is disabled"));
+    });
+  });
+
+  describe("getGuildRankOfAllGuildsOfUser", function(){
+    it("returns correct rank with only one guild", async function() {
+      await redis.zadd(`${guildId}:userkarma`, 10, targetUserId);
+      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId + 1);
+      await redis.zadd(`${guildId}:userkarma`, 6, targetUserId + 2);
+      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 3);
+      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId + 4);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId}:users`, targetUserId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId + 2);
+      await redis.sadd(`${guildId}:users`, targetUserId + 3);
+      await redis.sadd(`${guildId}:users`, targetUserId + 4);
+
+      const res1 = await karmaRetriever.getGuildRankOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res1.length, 1);
+      assert.strictEqual(res1[0].guildRank, 1);
+
+      const res2 = await karmaRetriever.getGuildRankOfAllGuildsOfUser(targetUserId + 1);
+      assert.strictEqual(res2.length, 1);
+      assert.strictEqual(res2[0].guildRank, 5);
+    });
+
+    it("returns 1 with single user in db", async function() {
+      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      let res = await karmaRetriever.getGuildRankOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildRank, 1);
+    });
+
+    it("returns 1 with one member in guild and another in a different guild", async function() {
+      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId);
+      await redis.zadd(`${guildId + 1}:userkarma`, 10, targetUserId + 1);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+
+      let res = await karmaRetriever.getGuildRankOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildRank, 1);
+    });
+
+    it("returns empty array when user doesnt exist", async function() {
+      await redis.zadd(`${guildId}:userkarma`, 0, targetUserId);
+      let res = await karmaRetriever.getGuildRankOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("doesnt include guilds that are disabled", async function() {
+      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId);
+      await redis.zadd(`${guildId + 1}:userkarma`, 10, targetUserId);
+      await redis.set(`${guildId}:config:disabled`, true);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId + 1}:users`, targetUserId);
+
+      let res = await karmaRetriever.getGuildRankOfAllGuildsOfUser(targetUserId);
+
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildRank, 1);
+    });
+
+    it("doesnt include guilds that are disabled in user", async function() {
+      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId);
+      await redis.zadd(`${guildId + 1}:userkarma`, 10, targetUserId);
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId + 1}:users`, targetUserId);
+      
+      let res = await karmaRetriever.getGuildRankOfAllGuildsOfUser(targetUserId);
+
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildRank, 1);
     });
   });
 
@@ -318,7 +399,7 @@ export default function(redisIp, redisPort){
     it("throws when user doesnt exist", async function() {
       await redis.zadd("userkarma", 12, targetUserId);
       await redis.sadd(`${guildId}:users`, targetUserId);
-      await assert.rejects(async () => karmaRetriever.getTotalGuildRankOfUser(targetUserId + 1, guildId), new Error("user not found"));
+      await assert.rejects(async () => await karmaRetriever.getTotalGuildRankOfUser(targetUserId + 1, guildId), new Error("user not found"));
     });
 
     it("returns correct rank with two guilds", async function() {
@@ -362,6 +443,112 @@ export default function(redisIp, redisPort){
       await redis.sadd(`${guildId}:users`, targetUserId);
       await redis.set(`${guildId}:config:disabled`, true);
       await assert.rejects(async () => await karmaRetriever.getTotalGuildRankOfUser(targetUserId, guildId), new Error("guild is disabled"));
+    });
+  });
+
+  describe("getTotalGuildRankOfAllGuildsOfUser", function() {
+    it("returns correct rank with only one guild", async function() {
+      await redis.zadd("userkarma", 12, targetUserId);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.zadd("userkarma", 50, targetUserId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId + 1);
+      await redis.zadd("userkarma", 0, targetUserId + 2);
+      await redis.sadd(`${guildId}:users`, targetUserId + 2);
+      await redis.zadd("userkarma", -12, targetUserId + 3);
+      await redis.sadd(`${guildId}:users`, targetUserId + 3);
+      await redis.sadd("guilds", guildId);
+
+      let res1 = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res1.length, 1);
+      assert.strictEqual(res1[0].guildRank, 2);
+
+      let res2 = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId + 2);
+      assert.strictEqual(res2.length, 1);
+      assert.strictEqual(res2[0].guildRank, 3);
+    });
+
+    it("returns 1 with single user in db", async function() {
+      await redis.zadd("userkarma", 12, targetUserId);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd("guilds", guildId);
+      let res = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildRank, 1);
+    });
+
+    it("returns empty array when user doesnt exist", async function() {
+      await redis.zadd("userkarma", 12, targetUserId);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd("guilds", guildId);
+      let res = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId + 1);
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("returns correct rank with two guilds", async function() {
+      await redis.zadd("userkarma", 12, targetUserId);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.zadd("userkarma", 50, targetUserId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId + 1);
+      await redis.zadd("userkarma", 0, targetUserId + 2);
+      await redis.sadd(`${guildId}:users`, targetUserId + 2);
+      await redis.zadd("userkarma", -12, targetUserId + 3);
+      await redis.sadd(`${guildId}:users`, targetUserId + 3);
+
+      await redis.sadd(`${guildId + 1}:users`, targetUserId);
+      await redis.sadd(`${guildId + 1}:users`, targetUserId + 3);
+      await redis.zadd("userkarma", 10000, targetUserId + 4);
+      await redis.sadd(`${guildId + 1}:users`, targetUserId + 4);
+
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+
+      let res1 = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId);
+      assert.strictEqual(res1.length, 2);
+      assert.strictEqual(res1[0].guildRank, 2);
+
+      let res2 = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId + 2);
+      assert.strictEqual(res2.length, 1);
+      assert.strictEqual(res2[0].guildRank, 3);
+    });
+
+    it("throws when user is disabled", async function() {
+      await redis.zadd("userkarma", 12, targetUserId);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd("guilds", guildId);
+      await redis.set(`${targetUserId}:config:disabled`, true);
+      await assert.rejects(async () => await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId), new Error("user is disabled"));
+    });
+
+    it("doesnt include guilds that are disabled", async function() {
+      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId);
+      await redis.zadd(`${guildId + 1}:userkarma`, 10, targetUserId);
+      await redis.set(`${guildId}:config:disabled`, true);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId + 1}:users`, targetUserId);
+      await redis.zadd("userkarma", 12, targetUserId);
+
+      let res = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId);
+
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildRank, 1);
+    });
+
+    it("doesnt include guilds that are disabled in user", async function() {
+      await redis.zadd(`${guildId}:userkarma`, -10, targetUserId);
+      await redis.zadd(`${guildId + 1}:userkarma`, 10, targetUserId);
+      await redis.sadd(`${targetUserId}:config:disabledguilds`, guildId);
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+      await redis.sadd(`${guildId}:users`, targetUserId);
+      await redis.sadd(`${guildId + 1}:users`, targetUserId);
+      await redis.zadd("userkarma", 12, targetUserId);
+      
+      let res = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(targetUserId);
+
+      assert.strictEqual(res.length, 1);
+      assert.strictEqual(res[0].guildRank, 1);
     });
   });
 

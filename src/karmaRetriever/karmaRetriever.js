@@ -52,6 +52,30 @@ export default {
     return karma;
   },
 
+  async getGuildRankOfAllGuildsOfUser(userId){
+    await throwIfUserDisabled(userId);
+    const guildsOfUser = await karmaReader.getGuildsOfUser(userId);
+    const resWithDisabledGuilds = await Promise.all(guildsOfUser.map(async (guildId) => {
+      if(!await configReader.isGuildDisabled(guildId) && !await configReader.isGuildDisabledInUser(userId, guildId)) return {
+        guildRank: await this.getGuildRankOfUser(userId, guildId),
+        guildId: guildId
+      }
+    }));
+    return resWithDisabledGuilds.filter(x => x);
+  },
+
+  async getTotalGuildRankOfAllGuildsOfUser(userId) {
+    await throwIfUserDisabled(userId);
+    const guildsOfUser = await karmaReader.getGuildsOfUser(userId);
+    const resWithDisabledGuilds = await Promise.all(guildsOfUser.map(async (guildId) => {
+      if(!await configReader.isGuildDisabled(guildId) && !await configReader.isGuildDisabledInUser(userId, guildId)) return {
+        guildRank: await this.getTotalGuildRankOfUser(userId, guildId),
+        guildId: guildId
+      }
+    }));
+    return resWithDisabledGuilds.filter(x => x);
+  },
+
   async getTotalGuildRankOfUser(userId, guildId){
     await Promise.all([throwIfUserDisabled(userId), throwIfUserDisabledGuild(userId, guildId), throwIfGuildDisabled(guildId)]);
     let guildUsers = await karmaReader.getUsersOfGuild(guildId);

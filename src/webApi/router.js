@@ -7,7 +7,7 @@ export default {
     if(matchedRoutes.length === 1){
       return await matchedRoutes[0].executorFn(req);
     }else{
-      console.error("Multiple routes for request found", req, matchedRoutes);
+      console.error("Multiple routes for request found", req, matchedRoutes.map(route => route.validatorFn.toString()));
       throw new Error("Multiple routes for request found");
     }
   },

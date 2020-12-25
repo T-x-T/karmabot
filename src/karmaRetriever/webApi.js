@@ -93,5 +93,124 @@ let handlers = [
         }));
       }
     )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("rank/user") && !req.path.includes("guild") && req.path.includes("global"),
+      async (req) => {
+        const userId = req.path.split("/")[2];
+        const rank = await karmaRetriever.getTotalRankOfUser(userId);
+        return {
+          userId: userId,
+          globalRank: rank
+        };
+      }
+    )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("rank/user") && req.path.includes("/guild/") && req.path.includes("local"),
+      async (req) => {
+        const userId = req.path.split("/")[2];
+        const guildId = req.path.split("/")[4];
+        const rank = await karmaRetriever.getGuildRankOfUser(userId, guildId);
+        let guildName;
+        try{
+          guildName = await discordFetcher.getGuildNameById(guildId);
+        }catch(e){
+          guildName = "deleted";
+        }
+        return {
+          userId: userId,
+          guildId: guildId,
+          guildName: guildName,
+          localGuildRank: rank
+        }
+      }
+    )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("rank/user") && req.path.includes("/guild/") && req.path.includes("global"),
+      async (req) => {
+        const userId = req.path.split("/")[2];
+        const guildId = req.path.split("/")[4];
+        const rank = await karmaRetriever.getTotalGuildRankOfUser(userId, guildId);
+        let guildName;
+        try {
+          guildName = await discordFetcher.getGuildNameById(guildId);
+        } catch(e) {
+          guildName = "deleted";
+        }
+        return {
+          userId: userId,
+          guildId: guildId,
+          guildName: guildName,
+          globalGuildRank: rank
+        }
+      }
+    )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("rank/user") && req.path.includes("/guilds/local"),
+      async (req) => {
+        const userId = req.path.split("/")[2];
+        const ranks = await karmaRetriever.getGuildRankOfAllGuildsOfUser(userId);
+        const ranksWithNames = await Promise.all(ranks.map(async (rank) => {
+          try {
+            rank.guildName = await discordFetcher.getGuildNameById(rank.guildId)
+          } catch(e) {
+            rank.guildName = "deleted"
+          }
+          return rank;
+        }));
+        return ranksWithNames;
+      }
+    )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("rank/user") && req.path.includes("/guilds/global"),
+      async (req) => {
+        const userId = req.path.split("/")[2];
+        const ranks = await karmaRetriever.getTotalGuildRankOfAllGuildsOfUser(userId);
+        const ranksWithNames = await Promise.all(ranks.map(async (rank) => {
+          try {
+            rank.guildName = await discordFetcher.getGuildNameById(rank.guildId)
+          } catch(e) {
+            rank.guildName = "deleted"
+          }
+          return rank;
+        }));
+        return ranksWithNames;
+      }
+    )
+  },
+
+  () => {
+    router.register(
+      (req) => req.path.startsWith("rank/guild/"),
+      async (req) => {
+        const guildId = req.path.split("/")[2];
+        const rank = await karmaRetriever.getTotalRankOfGuild(guildId);
+        let guildName;
+        try {
+          guildName = await discordFetcher.getGuildNameById(guildId);
+        } catch(e) {
+          guildName = "deleted";
+        }
+        return {
+          guildId: guildId,
+          guildName: guildName,
+          rank: rank
+        }
+      }
+    ) 
   }
 ];
