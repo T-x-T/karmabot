@@ -9,6 +9,7 @@
         
         <div v-if="loggedIn"><button @click="activeElement='userKarma'">Your Karma</button></div>
         <div v-if="loggedIn"><button @click="activeElement='userKarmaHistory'">Your Karma History</button></div>
+        <div v-if="loggedIn"><button @click="activeElement='rank'">Your Ranks</button></div>
 
         <div id="topboxLoginStart" v-if="loggedIn"><button :title="`You're logged in as ${this.userName}`" v-if="loggedIn" @click="logout">Logout</button></div>
 
@@ -33,6 +34,9 @@
       <div class="chart" v-if="activeElement === 'userKarmaHistory'">
         <h1 class="accent">Your Karma History:</h1>
         <HistoryPersonalKarma :userId="userId" />
+      </div>
+      <div class="chart" v-if="activeElement === 'rank'">
+        <StatsRanks :userId="userId" />
       </div>
     </div>
     <Footer />
