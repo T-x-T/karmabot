@@ -121,6 +121,8 @@ export default {
     @media screen and ($smallScreen)
       bottom: 47px
       left: 15px
+      font-size: 40pt
+      padding: 20px
   button:hover, a:hover
     cursor: pointer
     box-shadow: 0px 0px 20px $bright
