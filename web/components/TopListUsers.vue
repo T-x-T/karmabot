@@ -38,7 +38,10 @@ export default {
   },
   methods: {
     async loadRank() {
-      if(this.userId) this.rank = (await this.$axios.$get(`/api/v1/rank/user/${this.userId}/global`)).globalRank;
+      if(this.userId){
+        const rank = (await this.$axios.$get(`/api/v1/rank/user/${this.userId}/global`)).globalRank;
+        if(rank) this.rank = rank;
+      } 
     }
   },
   mounted() {
