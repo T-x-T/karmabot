@@ -1,6 +1,7 @@
 <template>
   <div id="topListUsersDiv">
-    <h1 class="accent">Top Users:</h1>
+    <h1 v-if="!rank" class="accent">Top Users:</h1>
+    <h1 v-if="rank" class="accent">Top Users (You are {{rank}}.):</h1>
     <table class="topListTable">
       <thead>
         <tr>
@@ -24,12 +25,24 @@
 export default {
   data (){
     return {
-      topList: []
+      topList: [],
+      rank: null
     }
   },
-
+  props:{
+    userId: String
+  },
   async fetch(){
     this.topList = await this.$axios.$get("/api/v1/toplists/users");
+    this.loadRank();
+  },
+  methods: {
+    async loadRank() {
+      if(this.userId) this.rank = (await this.$axios.$get(`/api/v1/rank/user/${this.userId}/global`)).globalRank;
+    }
+  },
+  mounted() {
+    this.loadRank();
   }
 }
 </script>

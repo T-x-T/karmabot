@@ -16,7 +16,7 @@
         <div id="topboxLoginStart" v-if="!loggedIn"><a href="https://discord.com/oauth2/authorize?client_id=779060613590548521&redirect_uri=https%3A%2F%2Fthetxt.io%2Fapi%2Fv1%2Flogin&response_type=code&scope=identify">Login</a></div>
       </div>
       <div class="centered" v-if="activeElement === 'topListUsers'">
-        <TopListUsers class="topList" />
+        <TopListUsers class="topList" :userId="userId" />
       </div>
       <div class="centered" v-if="activeElement === 'topListGuilds'">
         <TopListGuilds class="topList" />
