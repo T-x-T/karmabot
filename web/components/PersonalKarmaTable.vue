@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <h1 class="accent">Your Karma:</h1>
     <table class="topListTable">
       <thead>
         <tr>
@@ -42,4 +43,6 @@ export default {
   display: flex
   align-content: center
   justify-content: center
+  flex-direction: column
+  text-align: center
 </style>

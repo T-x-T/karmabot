@@ -13,7 +13,6 @@
         <GetStarted />
       </div>
       <div id="History">
-        <h1 class="accent">History</h1>
         <HistoryTotalkarma />
       </div>
     </div>

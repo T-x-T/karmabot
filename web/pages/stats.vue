@@ -16,23 +16,18 @@
         <div id="topboxLoginStart" v-if="!loggedIn"><a href="https://discord.com/oauth2/authorize?client_id=779060613590548521&redirect_uri=https%3A%2F%2Fthetxt.io%2Fapi%2Fv1%2Flogin&response_type=code&scope=identify">Login</a></div>
       </div>
       <div class="centered" v-if="activeElement === 'topListUsers'">
-        <h1 class="accent">Top Users:</h1>
         <TopListUsers class="topList" />
       </div>
       <div class="centered" v-if="activeElement === 'topListGuilds'">
-        <h1 class="accent">Top Servers:</h1>
         <TopListGuilds class="topList" />
       </div>
       <div class="chart" v-if="activeElement === 'historyTotalkarma'">
-        <h1 class="accent">Total Karma History:</h1>
         <HistoryTotalkarma />
       </div>
       <div class="centered" v-if="activeElement === 'userKarma'">
-        <h1 class="accent">Your Karma:</h1>
         <PersonalKarmaTable class="topList" :userId="userId" />
       </div>
       <div class="chart" v-if="activeElement === 'userKarmaHistory'">
-        <h1 class="accent">Your Karma History:</h1>
         <HistoryPersonalKarma :userId="userId" />
       </div>
       <div class="chart" v-if="activeElement === 'rank'">

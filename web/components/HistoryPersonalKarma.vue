@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <h1 class="accent">Your Karma History:</h1>
     <LineChart
       v-if="loaded"
       style="height:100%"
@@ -100,4 +101,5 @@ div#wrapper
   padding-right: 1%
   width: 98%
   height: 90%
+  text-align: center
 </style>

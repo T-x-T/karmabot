@@ -1,5 +1,6 @@
 <template>
   <div id="topListGuildsDiv">
+    <h1 class="accent">Top Servers:</h1>
     <table class="topListTable">
       <thead>
         <tr>
@@ -43,4 +44,6 @@ export default {
   display: flex
   align-content: center
   justify-content: center
+  flex-direction: column
+  text-align: center
 </style>
