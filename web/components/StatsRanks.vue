@@ -59,7 +59,6 @@ export default {
 #wrapper
   display: flex
   align-content: center
-  justify-content: center
   flex-direction: column
 
 select
