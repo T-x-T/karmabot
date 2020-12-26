@@ -21,14 +21,18 @@ a, p, h1, h2, h3, h4, h5, h6, th, td
   @media screen and ($smallScreen)
     width: 100%
   th
-    font-size: 30pt
+    font-size: 25pt
     text-align: center
     border-bottom: 2px solid $bright
     background-color: $darker
+    @media screen and ($smallScreen)
+      font-size: 30pt
   td
-    font-size: 20pt
+    font-size: 15pt
     text-align: center
     min-width: 200px
+    @media screen and ($smallScreen)
+      font-size: 20pt
   tr
     &:nth-child(even) td
       background-color: $darker
