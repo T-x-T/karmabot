@@ -78,7 +78,7 @@ export default {
 
 #pageWrapper
   @media screen and ($largeScreen)
-    height: 93.5vh
+    height: 94.5vh
 
 #controls
   padding: 25px
