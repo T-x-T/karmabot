@@ -1,12 +1,14 @@
 <template>
   <div id="wrapper">
     <h1 class="accent">Total Karma History:</h1>
-    <LineChart
-      v-if="loaded"
-      style="height:100%"
-      :chartdata="chartdata"
-      :options="options"
-    />
+    <div id="chart">
+      <LineChart
+        v-if="loaded"
+        style="height:100%"
+        :chartdata="chartdata"
+        :options="options"
+      />
+    </div>
   </div>
 </template>
 
@@ -73,10 +75,11 @@ export default {
 
 <style lang="sass" scoped>
 @import ../assets/colors
-div#wrapper
+#wrapper
   padding-left: 1%
   padding-right: 1%
   width: 98%
   height: 90%
   text-align: center
+  flex-direction: column
 </style>
