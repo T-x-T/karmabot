@@ -3,7 +3,7 @@ import Discord from "discord.js";
 import setupKarmaUpdater from "./src/karmaUpdater/index.js";
 import setupKarmaRetriever from "./src/karmaRetriever/index.js";
 import setupConfigurator from "./src/configurator/index.js";
-import setupDiscordGeneralCommands from "./src/discordGeneralCommands/discordGeneralCommands.js";
+import setupDiscordGeneralCommands from "./src/discordGeneralCommands/index.js";
 import setupApiWebserver from "./src/webApi/index.js";
 import setupHistoryRecorder from "./src/historyRecorder/index.js";
 import setupHistoryRetriever from "./src/historyRetriever/index.js";
@@ -40,7 +40,7 @@ discordClient.login(config.botToken).then(async () => {
     setupKarmaUpdater(discordClient, config.redisIp, config.redisPort),
     setupKarmaRetriever(discordClient, config.botPrefix, config.redisIp, config.redisPort),
     setupConfigurator(discordClient, config.botPrefix, config.redisIp, config.redisPort),
-    setupDiscordGeneralCommands(discordClient, config.botPrefix),
+    setupDiscordGeneralCommands(discordClient, config.botPrefix, config.redisIp, config.redisPort),
     setupHistoryRecorder(config.redisIp, config.redisPort),
     setupHistoryRetriever(config.redisIp, config.redisPort, discordClient),
     setupAuth(config.clientId, config.clientSecret, config.redirectUri, config.baseUrl)

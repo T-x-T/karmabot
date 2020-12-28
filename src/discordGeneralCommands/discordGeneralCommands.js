@@ -1,11 +1,12 @@
 import Discord from "discord.js";
 
 let commandPrefix = "";
-let client;
+let client, infoReader;
 
-export default (_client, _commandPrefix) => {
+export default (_client, _commandPrefix, _infoReader) => {
   commandPrefix = _commandPrefix + " ";
   client = _client;
+  infoReader = _infoReader;
 
   client.user.setActivity("for your votes", {type: "WATCHING"})
 
@@ -132,15 +133,12 @@ function config(message) {
 }
 
 async function info(message){
-  let userCount = 0;
-  client.guilds.cache.array().forEach(guild => userCount += guild.memberCount);
-
   const embed = new Discord.MessageEmbed()
     .setColor("#000000")
     .setTitle("Info")
     .setDescription("Shows some general info about the bot")
-    .addField("guilds", client.guilds.cache.array().length, true)
-    .addField("users", userCount, true)
+    .addField("servers", await infoReader.getGuildCount(), true)
+    .addField("users", await infoReader.getUserCount(), true)
     .addField("invite", "[click me](https://discord.com/oauth2/authorize?client_id=779060613590548521&scope=bot&permissions=1073859648)", true)
     .addField("creator", "Txt#0001", true)
     .addField("website", "https://thetxt.io", true)
