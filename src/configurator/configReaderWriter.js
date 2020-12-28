@@ -46,5 +46,13 @@ export default {
 
   async setDownvoteEmoji(guildId, emojiId) {
     return await redis.set(`${guildId}:config:downvoteemojiid`, emojiId);
+  },
+
+  async deleteGuild(guildId){
+    await redis.srem("guilds", guildId);
+    const keysOfGuild = await redis.keys(guildId + ":*");
+    await Promise.all(keysOfGuild.map(async (key) => {
+      await redis.del(key);
+    }));
   }
 }

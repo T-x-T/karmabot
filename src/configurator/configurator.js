@@ -47,5 +47,9 @@ export default {
     if(!guildId) throw new Error("No guildId given");
     if(!emojiId) throw new Error("No emojiId given");
     return await configReaderWriter.setDownvoteEmoji(guildId, emojiId);
+  },
+
+  async deleteGuild(guildId){
+    await configReaderWriter.deleteGuild(guildId);
   }
 }

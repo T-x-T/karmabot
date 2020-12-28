@@ -227,4 +227,43 @@ export default function(redisIp, redisPort) {
       await assert.rejects(async () => await configurator.setDownvoteEmoji(guildId, null), new Error("No emojiId given"));
     });
   });
+
+  describe("deleteGuild", function() {
+    it("removes guild from guilds set", async function(){
+      await redis.sadd("guilds", guildId);
+      await configurator.deleteGuild(guildId);
+      const res = await redis.sismember("guilds", guildId);
+      assert.strictEqual(res, 0);
+    });
+
+    it("removes only guild from guilds set", async function(){
+      await redis.sadd("guilds", guildId);
+      await redis.sadd("guilds", guildId + 1);
+      await configurator.deleteGuild(guildId);
+      const res1 = await redis.sismember("guilds", guildId);
+      assert.strictEqual(res1, 0);
+      const res2 = await redis.sismember("guilds", guildId + 1);
+      assert.strictEqual(res2, 1);
+    });
+
+    it("removes other keys of guild", async function(){
+      await redis.set(`${guildId}:config:1`, "test");
+      await redis.set(`${guildId}:config:2`, "test");
+      await configurator.deleteGuild(guildId);
+      const res = await redis.keys(guildId + "*");
+      assert.strictEqual(res.length, 0);
+    });
+
+    it("removes other keys only of guild", async function() {
+      await redis.set(`${guildId}:config:1`, "test");
+      await redis.set(`${guildId}:config:2`, "test");
+      await redis.set(`${guildId + 1}:config:1`, "test");
+      await redis.set(`${guildId + 1}:config:2`, "test");
+      await configurator.deleteGuild(guildId);
+      const res1 = await redis.keys(guildId + ":*");
+      assert.strictEqual(res1.length, 0);
+      const res2 = await redis.keys(guildId + 1 + "*");
+      assert.strictEqual(res2.length, 2);
+    });
+  });
 }

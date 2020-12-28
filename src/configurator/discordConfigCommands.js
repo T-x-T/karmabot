@@ -23,7 +23,7 @@ export default (_client, _commandPrefix) => {
   });
 
   client.on("guildDelete", async (guild) => {
-    await configurator.disableGuild(guild.id);
+    await configurator.deleteGuild(guild.id);
   });
 }
 
