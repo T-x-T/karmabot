@@ -141,7 +141,7 @@ async function info(message){
     .addField("users", await infoReader.getUserCount(), true)
     .addField("invite", "[click me](https://discord.com/oauth2/authorize?client_id=779060613590548521&scope=bot&permissions=1073859648)", true)
     .addField("creator", "Txt#0001", true)
-    .addField("website", "https://thetxt.io", true)
+    .addField("website", "https://karmabot.thetxt.io", true)
     .addField("vote", "please vote for me on [top.gg](https://top.gg/bot/779060613590548521)")
     .addField("repo", "https://gitlab.com/T-x-T/karmabot", true)
     .addField("send bug reports to", "incoming+t-x-t-karmabot-22359119-issue-@incoming.gitlab.com")

@@ -12,7 +12,7 @@
         <div v-if="loggedIn"><button @click="activeElement='rank'">Your Ranks</button></div>
       </div>
       <div class="loginControl" v-if="loggedIn"><button :title="`You're logged in as ${this.userName}`" v-if="loggedIn" @click="logout">Logout</button></div>
-      <div class="loginControl" v-if="!loggedIn"><a href="https://discord.com/oauth2/authorize?client_id=779060613590548521&redirect_uri=https%3A%2F%2Fthetxt.io%2Fapi%2Fv1%2Flogin&response_type=code&scope=identify">Login</a></div>
+      <div class="loginControl" v-if="!loggedIn"><a href="https://discord.com/oauth2/authorize?client_id=779060613590548521&redirect_uri=https%3A%2F%2Fkarmabot.thetxt.io%2Fapi%2Fv1%2Flogin&response_type=code&scope=identify">Login</a></div>
       <div id="main">
         <div class="centered" v-if="activeElement === 'topListUsers'">
           <TopListUsers class="topList" :userId="userId" />
