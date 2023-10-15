@@ -221,8 +221,11 @@ async function top(message, subcommand){
 async function convertTopListToTable(topList, message){
   let output = "```Rank Karma Name\n";
   for(let i = 0; i < topList.length; i++) {
-    let user = await message.guild.members.fetch(topList[i].userId);
-    let username = user.nickname ? user.nickname : user.user.tag;
+    let username = "unknown";
+    try {
+      let user = await message.guild.members.fetch(topList[i].userId);
+      username = user.nickname ? user.nickname : user.user.tag;
+    } catch() {}
 
     let rank = i;
     rank++;
