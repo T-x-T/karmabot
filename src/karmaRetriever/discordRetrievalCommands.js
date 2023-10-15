@@ -225,7 +225,7 @@ async function convertTopListToTable(topList, message){
     try {
       let user = await message.guild.members.fetch(topList[i].userId);
       username = user.nickname ? user.nickname : user.user.tag;
-    } catch() {}
+    } catch(_) {}
 
     let rank = i;
     rank++;
