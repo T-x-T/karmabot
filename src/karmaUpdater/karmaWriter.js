@@ -1,8 +1,8 @@
 import Redis from "ioredis";
 let redis;
 
-export default{
-  connect(ip, port){
+export default {
+  connect(ip, port) {
     return new Promise((resolve, reject) => {
       redis = new Redis(port, ip);
 
@@ -10,7 +10,7 @@ export default{
         resolve();
       });
 
-      redis.once("error", e => {
+      redis.once("error", (e) => {
         reject(e);
       });
     });
@@ -56,7 +56,7 @@ export default{
     await redis.sadd("users", userId);
   },
 
-  async addToGuildIfNotPresent(guildId){
+  async addToGuildIfNotPresent(guildId) {
     await redis.sadd("guilds", guildId);
-  }
+  },
 };

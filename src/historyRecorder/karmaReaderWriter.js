@@ -11,114 +11,142 @@ export default {
         resolve();
       });
 
-      redis.once("error", e => {
+      redis.once("error", (e) => {
         console.error("historyRecorder failed to connect to redis:", e);
         reject(e);
       });
     });
   },
 
-  async getAllUserKarma(){
+  async getAllUserKarma() {
     const userKarma = await redis.zrange("userkarma", 0, -1, "WITHSCORES");
     let userKarmaObjects = [];
-    for(let i = 0; i < userKarma.length; i += 2){
+    for (let i = 0; i < userKarma.length; i += 2) {
       userKarmaObjects.push({
         karma: Number(userKarma[i + 1]),
-        userId: userKarma[i]
+        userId: userKarma[i],
       });
     }
     return userKarmaObjects;
   },
 
-  async getAllGuildKarma(){
+  async getAllGuildKarma() {
     const guildKarma = await redis.zrange("guildkarma", 0, -1, "WITHSCORES");
     let guildKarmaObjects = [];
-    for(let i = 0; i < guildKarma.length; i += 2){
+    for (let i = 0; i < guildKarma.length; i += 2) {
       guildKarmaObjects.push({
         karma: Number(guildKarma[i + 1]),
-        guildId: guildKarma[i]
+        guildId: guildKarma[i],
       });
     }
     return guildKarmaObjects;
   },
 
-  async getAllUserKarmaInAllGuilds(){
+  async getAllUserKarmaInAllGuilds() {
     const guilds = await this.getAllGuilds();
-    const karmaInGuildObjects = await Promise.all(guilds.map(guildId => this.getAllUserKarmaInGuild(guildId)));
+    const karmaInGuildObjects = await Promise.all(
+      guilds.map((guildId) => this.getAllUserKarmaInGuild(guildId))
+    );
     return karmaInGuildObjects.flat();
   },
 
-  async getAllUserKarmaInGuild(guildId){
-    const karmaInGuild = await redis.zrange(`${guildId}:userkarma`, 0, -1, "WITHSCORES");
+  async getAllUserKarmaInGuild(guildId) {
+    const karmaInGuild = await redis.zrange(
+      `${guildId}:userkarma`,
+      0,
+      -1,
+      "WITHSCORES"
+    );
     let karmaInGuildObjects = [];
-    for(let i = 0; i < karmaInGuild.length; i += 2){
+    for (let i = 0; i < karmaInGuild.length; i += 2) {
       karmaInGuildObjects.push({
         karma: Number(karmaInGuild[i + 1]),
         guildId: guildId,
-        userId: karmaInGuild[i]
+        userId: karmaInGuild[i],
       });
     }
     return karmaInGuildObjects;
   },
 
-  async getTotalKarma(){
+  async getTotalKarma() {
     const allGuilds = await this.getAllGuildKarma();
     let totalKarma = 0;
-    allGuilds.forEach(guild => totalKarma += guild.karma);
+    allGuilds.forEach((guild) => (totalKarma += guild.karma));
     return totalKarma;
   },
 
-  async getAllGuilds(){
+  async getAllGuilds() {
     return await redis.smembers("guilds");
   },
 
-  async getUserCount(){
+  async getUserCount() {
     return await redis.scard("users");
   },
 
-  async getGuildCount(){
+  async getGuildCount() {
     return await redis.scard("guilds");
   },
 
-  async writeUserKarmaHistory(historyObjects){
-    const commands = historyObjects.map(historyObject => {
+  async writeUserKarmaHistory(historyObjects) {
+    const commands = historyObjects.map((historyObject) => {
       return [
         //Needs timestamp in value as well, so we dont get any duplicate values
-        "zadd", `history:${historyObject.userId}:userkarma`, historyObject.timestamp, `${historyObject.karma}:${historyObject.timestamp}`
+        "zadd",
+        `history:${historyObject.userId}:userkarma`,
+        historyObject.timestamp,
+        `${historyObject.karma}:${historyObject.timestamp}`,
       ];
     });
     await redis.multi(commands).exec();
   },
 
-  async writeGuildKarmaHistory(historyObjects){
-    const commands = historyObjects.map(historyObject => {
+  async writeGuildKarmaHistory(historyObjects) {
+    const commands = historyObjects.map((historyObject) => {
       return [
         //Needs timestamp in value as well, so we dont get any duplicate values
-        "zadd", `history:${historyObject.guildId}:guildkarma`, historyObject.timestamp, `${historyObject.karma}:${historyObject.timestamp}`
+        "zadd",
+        `history:${historyObject.guildId}:guildkarma`,
+        historyObject.timestamp,
+        `${historyObject.karma}:${historyObject.timestamp}`,
       ];
     });
     await redis.multi(commands).exec();
   },
 
-  async writeTotalKarmaHistory(historyObject){
-    await redis.zadd("history:totalkarma", historyObject.timestamp, `${historyObject.karma}:${historyObject.timestamp}`);
+  async writeTotalKarmaHistory(historyObject) {
+    await redis.zadd(
+      "history:totalkarma",
+      historyObject.timestamp,
+      `${historyObject.karma}:${historyObject.timestamp}`
+    );
   },
 
-  async writeUserKarmaInGuildHistory(historyObjects){
-    const commands = historyObjects.map(historyObject => {
+  async writeUserKarmaInGuildHistory(historyObjects) {
+    const commands = historyObjects.map((historyObject) => {
       return [
         //Needs timestamp in value as well, so we dont get any duplicate values
-        "zadd", `history:${historyObject.guildId}:${historyObject.userId}:userkarma`, historyObject.timestamp, `${historyObject.karma}:${historyObject.timestamp}`
+        "zadd",
+        `history:${historyObject.guildId}:${historyObject.userId}:userkarma`,
+        historyObject.timestamp,
+        `${historyObject.karma}:${historyObject.timestamp}`,
       ];
     });
     await redis.multi(commands).exec();
   },
 
-  async writeUserCountHistory(historyObject){
-    await redis.zadd("history:usercount", historyObject.timestamp, `${historyObject.count}:${historyObject.timestamp}`);
+  async writeUserCountHistory(historyObject) {
+    await redis.zadd(
+      "history:usercount",
+      historyObject.timestamp,
+      `${historyObject.count}:${historyObject.timestamp}`
+    );
   },
 
-  async writeGuildCountHistory(historyObject){
-    await redis.zadd("history:guildcount", historyObject.timestamp, `${historyObject.count}:${historyObject.timestamp}`);
-  }
-}
+  async writeGuildCountHistory(historyObject) {
+    await redis.zadd(
+      "history:guildcount",
+      historyObject.timestamp,
+      `${historyObject.count}:${historyObject.timestamp}`
+    );
+  },
+};

@@ -11,7 +11,7 @@ export default {
         resolve();
       });
 
-      redis.once("error", e => {
+      redis.once("error", (e) => {
         console.error("historyRecorder failed to connect to redis:", e);
         reject(e);
       });
@@ -19,10 +19,10 @@ export default {
   },
 
   async getUserCount() {
-    return await redis.scard("users"); 
+    return await redis.scard("users");
   },
 
   async getGuildCount() {
     return await redis.scard("guilds");
-  }
-}
+  },
+};

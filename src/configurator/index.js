@@ -8,4 +8,4 @@ export default async (discordClient, botPrefix, redisIp, redisPort) => {
   console.log("configurator connected to redis");
 
   discordConfigCommands(discordClient, botPrefix);
-}
+};
