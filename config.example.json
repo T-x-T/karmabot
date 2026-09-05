@@ -1,11 +1,11 @@
 {
   "botToken": "discord bot token",
-  "botPrefix": "+karma",
   "redisIp": "127.0.0.1",
   "redisPort": 6379,
   "apiPort": 4005,
   "clientId": "discord client id",
   "clientSecret": "discord client secret",
   "redirectUri": "discord oauth redirect oauth uri",
-  "baseUrl": "http://localhost:3000"
+  "baseUrl": "http://localhost:3000",
+  "testGuildId": "the id of the guild used for testing"
 }
