@@ -1,5 +1,5 @@
 import fs from "fs";
-import Discord from "discord.js";
+import Discord, { GatewayIntentBits } from "discord.js";
 import setupKarmaUpdater from "./src/karmaUpdater/index.js";
 import setupKarmaRetriever from "./src/karmaRetriever/index.js";
 import setupConfigurator from "./src/configurator/index.js";
@@ -9,41 +9,71 @@ import setupHistoryRecorder from "./src/historyRecorder/index.js";
 import setupHistoryRetriever from "./src/historyRetriever/index.js";
 import setupAuth from "./src/auth/index.js";
 
-import {exec} from "child_process";
-
+import { exec } from "child_process";
 
 global.ENVIRONMENT = process.env.NODE_ENV ? process.env.NODE_ENV : "staging";
-const config = JSON.parse(fs.readFileSync(`./config.${global.ENVIRONMENT}.json`));
+const config = JSON.parse(
+  fs.readFileSync(`./config.${global.ENVIRONMENT}.json`)
+);
 
-try{
+try {
   exec("npm run nuxt_start", (err, stdOut, stdErr) => {
-    if(err) {
+    if (err) {
       console.log(err);
     } else {
       console.log("nuxt started");
     }
-    if(stdOut) console.log("StdOut:", stdOut);
-    if(stdErr) console.log("StdErr:",stdErr);
+    if (stdOut) console.log("StdOut:", stdOut);
+    if (stdErr) console.log("StdErr:", stdErr);
   });
-}catch(e){
-  console.log("Couldnt start nuxt:", e)
+} catch (e) {
+  console.log("Couldnt start nuxt:", e);
 }
 
 setupApiWebserver(config.apiPort);
 
 const discordClient = new Discord.Client({
-  partials: ['USER', 'REACTION', 'MESSAGE']
+  intents: [
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessages,
+  ],
 });
-discordClient.login(config.botToken).then(async () => {
+discordClient.login(config.botToken);
+
+discordClient.on(Discord.Events.ClientReady, async (readyClient) => {
   console.log("discordClient logged in");
   await Promise.all([
-    setupKarmaUpdater(discordClient, config.redisIp, config.redisPort),
-    setupKarmaRetriever(discordClient, config.botPrefix, config.redisIp, config.redisPort),
-    setupConfigurator(discordClient, config.botPrefix, config.redisIp, config.redisPort),
-    setupDiscordGeneralCommands(discordClient, config.botPrefix, config.redisIp, config.redisPort),
+    setupKarmaUpdater(readyClient, config.redisIp, config.redisPort),
+    setupKarmaRetriever(
+      readyClient,
+      config.botPrefix,
+      config.redisIp,
+      config.redisPort
+    ),
+    setupConfigurator(
+      readyClient,
+      config.botPrefix,
+      config.redisIp,
+      config.redisPort
+    ),
+    setupDiscordGeneralCommands(
+      readyClient,
+      config.botPrefix,
+      config.redisIp,
+      config.redisPort,
+      config.clientId,
+      config.botToken
+    ),
     setupHistoryRecorder(config.redisIp, config.redisPort),
-    setupHistoryRetriever(config.redisIp, config.redisPort, discordClient),
-    setupAuth(config.clientId, config.clientSecret, config.redirectUri, config.baseUrl)
+    setupHistoryRetriever(config.redisIp, config.redisPort, readyClient),
+    setupAuth(
+      config.clientId,
+      config.clientSecret,
+      config.redirectUri,
+      config.baseUrl
+    ),
   ]);
   console.log("everything logged in, lets go!");
 });

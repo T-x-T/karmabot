@@ -13,8 +13,8 @@
     "@nuxtjs/proxy": "^2.1.0",
     "chart.js": "^2.9.4",
     "cookie-universal-nuxt": "^2.1.4",
-    "discord.js": "^12.4.1",
-    "ioredis": "^4.19.2",
+    "discord.js": "^14.27.0",
+    "ioredis": "^6.0.0",
     "nuxt": "^2.14.7",
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
@@ -25,6 +25,7 @@
     "mocha": "^12.0.0"
   },
   "scripts": {
+    "run": "node index.js",
     "test": "mocha --exit",
     "nuxt_dev": "nuxt -c nuxt.config.mjs",
     "nuxt_build": "nuxt build -c nuxt.config.mjs",
