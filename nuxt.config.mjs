@@ -10,6 +10,6 @@ export default {
     proxy: true,
   },
   proxy: {
-    "/api/v1/": process.env.NODE_ENV === "prod" ? "https://thetxt.io" : "http://localhost:4005"
+    "/api/v1/": process.env.NODE_ENV === "prod" ? "https://karmabot.thetxt.io" : "http://localhost:4005"
   }
 }

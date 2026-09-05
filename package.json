@@ -18,11 +18,11 @@
     "nuxt": "^2.14.7",
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
-    "vue-chartjs": "^3.5.1"
+    "vue-chartjs": "^3.5.1",
+    "qs": "^6.0.0"
   },
   "devDependencies": {
-    "fibers": "^5.0.0",
-    "mocha": "^8.2.1"
+    "mocha": "^12.0.0"
   },
   "scripts": {
     "test": "mocha --exit",
@@ -32,12 +32,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/t-x-t/karmabot.git"
+    "url": "git+https://git.thetxt.io/thetxt/karmabot.git"
   },
   "author": "txt",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/t-x-t/karmabot/issues"
+    "url": "https://git.thetxt.io/thetxt/karmabot/issues"
   },
-  "homepage": "https://gitlab.com/t-x-t/karmabot#readme"
+  "homepage": "https://karmabot.thetxt.io"
 }
