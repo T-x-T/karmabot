@@ -11,7 +11,6 @@ export default (_client) => {
   const client = _client;
 
   client.on(Discord.Events.MessageReactionAdd, async (reaction, user) => {
-    console.log("added reaction");
     if (!reaction.emoji.id) return;
     if (!reaction.message.guild) return;
     if (user.bot) return;

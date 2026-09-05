@@ -41,6 +41,7 @@ const discordClient = new Discord.Client({
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessageReactions,
   ],
 });
 discordClient.login(config.botToken);
