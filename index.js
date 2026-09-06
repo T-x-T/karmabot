@@ -100,11 +100,26 @@ discordClient.on(Discord.Events.ClientReady, async (readyClient) => {
       }
     );
     console.log(
-      `Successfully reloaded ${data.length} application (/) commands.`
+      `Successfully reloaded ${data.length} application (/) commands in the dev guild.`
     );
   } catch (e) {
     console.error(
       `Got an error when trying to refresh commands in test guild: ${e.message}`
+    );
+  }
+  try {
+    const data = await rest.put(
+      Discord.Routes.applicationCommands(config.clientId),
+      {
+        body: Array.from(commands.mapValues((x) => x.data.toJSON()).values()),
+      }
+    );
+    console.log(
+      `Successfully reloaded ${data.length} application (/) commands globally.`
+    );
+  } catch (e) {
+    console.error(
+      `Got an error when trying to refresh commands globally: ${e.message}`
     );
   }
 
