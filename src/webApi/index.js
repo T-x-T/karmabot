@@ -1,54 +1,64 @@
 import http from "http";
 import url from "url";
-
-import karmaRetriever from "../karmaRetriever/webApi.js";
 import router from "./router.js";
+import fs from "node:fs/promises";
 
-export default function(port){
+export default function (port) {
   let httpServer = http.createServer(listener);
   httpServer.listen(port, () => {
-    console.log("API Webserver started");
+    console.log(`API Webserver started on port ${port}`);
   });
 }
 
-async function listener(req, res){
+async function listener(req, res) {
   let reqData = getRequestData(req);
 
   res.setHeader("Content-Type", "application/json");
 
   //Currently there is only the v1 API
-  if(reqData.path.startsWith("/api/v1/")){
+  if (reqData.path.startsWith("/api/v1/")) {
     reqData.path = reqData.path.replace("/api/v1/", "");
-    try{
+    try {
       const resData = await router.route(reqData);
-      if(resData){
-        if(resData.hasOwnProperty("statusCode")){
+      if (resData) {
+        if (resData.hasOwnProperty("statusCode")) {
           res.writeHead(resData.statusCode, resData.payload);
           res.end();
-        }else{
+        } else {
           res.writeHead(200);
           res.end(JSON.stringify(resData));
         }
-      }else{
+      } else {
         res.writeHead(404);
-        res.end("{\"error\": \"API resource not found\"}");
+        res.end('{"error": "API resource not found"}');
       }
-    }catch(e){
+    } catch (e) {
       res.writeHead(500);
-      res.end(JSON.stringify({error: e.message}));
+      res.end(JSON.stringify({ error: e.message }));
       console.log(e);
     }
-  }else{
+  } else if (
+    reqData.path.length == 0 ||
+    reqData.path == "/" ||
+    reqData.path.startsWith("/index")
+  ) {
+    res.setHeader("Content-Type", "text/html");
+    res.writeHead(200);
+    const file = await fs.readFile("./assets/index.html");
+    res.end(file);
+  } else {
     res.writeHead(404);
-    res.end("{\"error\": \"API resource not found\"}");
+    res.end('{"error": "API resource not found"}');
   }
 }
 
-function getRequestData(req){
+function getRequestData(req) {
   const parsedUrl = url.parse(req.url, true);
   return {
     path: parsedUrl.pathname,
     method: req.method,
-    query: req.url.includes("?") ? JSON.parse(JSON.stringify(parsedUrl.query)) : {} //Hacky fix to add prototype to parsedUrl.query
-  }
+    query: req.url.includes("?")
+      ? JSON.parse(JSON.stringify(parsedUrl.query))
+      : {}, //Hacky fix to add prototype to parsedUrl.query
+  };
 }

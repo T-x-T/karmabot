@@ -4,3 +4,5 @@ node_modules
 .nuxt
 config.staging.json
 config.testing.json
+docker-compose.local.yml
+docker-compose.build.yml

@@ -10,7 +10,7 @@ export default {
         resolve();
       });
 
-      redis.once("error", e => {
+      redis.once("error", (e) => {
         reject(e);
       });
     });
@@ -48,11 +48,13 @@ export default {
     return await redis.set(`${guildId}:config:downvoteemojiid`, emojiId);
   },
 
-  async deleteGuild(guildId){
+  async deleteGuild(guildId) {
     await redis.srem("guilds", guildId);
     const keysOfGuild = await redis.keys(guildId + ":*");
-    await Promise.all(keysOfGuild.map(async (key) => {
-      await redis.del(key);
-    }));
-  }
-}
+    await Promise.all(
+      keysOfGuild.map(async (key) => {
+        await redis.del(key);
+      })
+    );
+  },
+};

@@ -7,22 +7,22 @@ export default {
       redis = new Redis(port, ip);
 
       redis.once("ready", () => {
-        console.log("historyRecorder connected to redis");
+        console.log("infoReader connected to redis");
         resolve();
       });
 
-      redis.once("error", e => {
-        console.error("historyRecorder failed to connect to redis:", e);
+      redis.once("error", (e) => {
+        console.error("infoReader failed to connect to redis:", e);
         reject(e);
       });
     });
   },
 
   async getUserCount() {
-    return await redis.scard("users"); 
+    return await redis.scard("users");
   },
 
   async getGuildCount() {
     return await redis.scard("guilds");
-  }
-}
+  },
+};

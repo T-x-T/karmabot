@@ -1,240 +1,313 @@
 import karmaRetriever from "./karmaRetriever.js";
 import Discord from "discord.js";
 
-export default (_client, _commandPrefix) => {
-  const commandPrefix = _commandPrefix + " ";
-  const client = _client;
+export default async (interaction) => {
+  const subcommand = interaction.options.getSubcommand();
 
-  client.on("message", message => {
-    let content = message.content.toLowerCase();
+  let guild;
+  if (interaction.guild.available) {
+    guild = interaction.guild;
+  } else {
+    guild = await interaction.guild.fetch();
+  }
 
-    if(message.author.bot) return;
-    if(!content.startsWith(commandPrefix + "show") && !content.startsWith(commandPrefix + "rank") && !content.startsWith(commandPrefix + "top")) return;
-    if(!message.guild){
-      message.channel.send("I only work in servers at the moment");
-      return;
-    } 
-    
-    content = content.replace(commandPrefix, "");
-    let command = content.split(" ")[0];
-    if(typeof commandRoutes[command] === "function") {
-      commandRoutes[command](message, content.replace(command, "").trim());
+  const targetUser = interaction.options.getUser("user") ?? interaction.user;
+
+  switch (subcommand) {
+    case "total_server_karma": {
+      await total_server_karma(interaction, guild);
+      break;
     }
-  });
-}
-
-const commandRoutes = {
-  show: show,
-  rank: rank,
-  top: top
+    case "total_server_karma_of_user": {
+      await total_server_karma_of_user(interaction, guild, targetUser);
+      break;
+    }
+    case "total_karma_of_user": {
+      await total_karma_of_user(interaction, guild, targetUser);
+      break;
+    }
+    case "rank_server_global": {
+      await rank_server_global(interaction, guild, targetUser);
+      break;
+    }
+    case "rank_of_user_in_server": {
+      await rank_of_user_in_server(interaction, guild);
+      break;
+    }
+    case "rank_of_user_in_server_total": {
+      await rank_of_user_in_server_total(interaction, guild, targetUser);
+      break;
+    }
+    case "top_global": {
+      await top_global(interaction, guild);
+      break;
+    }
+    case "top_server": {
+      await top_server(interaction, guild);
+      break;
+    }
+  }
 };
 
-async function show(message, subcommand){
-  const targetUser = message.mentions.users.first() ? message.mentions.users.first().id : message.author.id;
-  
-  if(subcommand.startsWith("server total")){
-    //+karma show server total: show total karma of current server
-    try {
-      let karma = await karmaRetriever.getTotalKarmaOfGuild(message.guild.id);
-      const embed = new Discord.MessageEmbed()
-        .setColor("#000000")
-        .setTitle(karma)
-        .setDescription("Sum of all karma of current server")
-        .addField("server", message.guild.name, true)
-        .addField("members", message.guild.memberCount, true)
-        .setTimestamp()
-        .setFooter(`Generated on request of ${message.author.tag}`);
+async function total_server_karma(interaction, guild) {
+  try {
+    let karma = await karmaRetriever.getTotalKarmaOfGuild(guild.id);
+    const embed = new Discord.EmbedBuilder()
+      .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
+      .setTitle(`${karma}`)
+      .setDescription("Sum of all karma of current server")
+      .addFields(
+        {
+          name: "server",
+          value: `${guild.name}`,
+        },
+        {
+          name: "members",
+          value: `${guild.memberCount}`,
+        }
+      )
+      .setTimestamp()
+      .setFooter({
+        text: `Generated on request of @${interaction.user.username}`,
+      });
 
-      if(karma < 0) embed.setColor("#FF0000");
-      if(karma > 0) embed.setColor("#00FF00");
-      message.channel.send(embed);
-    } catch(e) {
-      message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-    }
-  }else if(subcommand.startsWith("server")){
-    //+karma show server [@mention]: show karma in current guild of author or mentioned user
-    try {
-      let karma = await karmaRetriever.getTotalKarmaOfUserInGuild(targetUser, message.guild.id);
-      const embed = new Discord.MessageEmbed()
-        .setColor("#000000")
-        .setTitle(karma)
-        .setDescription("Karma of user in current server")
-        .addField("user", `<@${targetUser}>`, true)
-        .addField("server", message.guild.name, true)
-        .setTimestamp()
-        .setFooter(`Generated on request of ${message.author.tag}`);
+    await interaction.reply({
+      embeds: [embed],
+    });
+  } catch (e) {
+    console.error(e);
+    await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
+  }
+}
+async function total_server_karma_of_user(interaction, guild, targetUser) {
+  try {
+    let karma = await karmaRetriever.getTotalKarmaOfUserInGuild(
+      targetUser,
+      guild.id
+    );
+    const embed = new Discord.EmbedBuilder()
+      .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
+      .setTitle(`${karma}`)
+      .setDescription("Karma of user in current server")
+      .addFields(
+        {
+          name: "user",
+          value: `${targetUser}`,
+        },
+        {
+          name: "server",
+          value: `${guild.name}`,
+        }
+      )
+      .setTimestamp()
+      .setFooter({
+        text: `Generated on request of @${interaction.user.username}`,
+      });
 
-      if(karma < 0) embed.setColor("#FF0000");
-      if(karma > 0) embed.setColor("#00FF00");
-      message.channel.send(embed);
-    } catch(e) {
-      message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-    }
-  }else{
-    //+karma show [@mention]: show karma of author or mentioned user
-    try{
-      let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
-      const embed = new Discord.MessageEmbed()
-        .setColor("#000000")
-        .setTitle(karma)
-        .setDescription("Karma of user across all servers")
-        .addField("user", `<@${targetUser}>`, true)
-        .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
-        .setTimestamp()
-        .setFooter(`Generated on request of ${message.author.tag}`);
+    await interaction.reply({
+      embeds: [embed],
+    });
+  } catch (e) {
+    console.error(e);
+    await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
+  }
+}
+async function total_karma_of_user(interaction, guild, targetUser) {
+  try {
+    let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
+    const embed = new Discord.EmbedBuilder()
+      .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
+      .setTitle(`${karma}`)
+      .setDescription("Karma of user across all servers")
+      .addFields(
+        {
+          name: "user",
+          value: `${targetUser}`,
+        },
+        {
+          name: "bot",
+          value: (await guild.members.fetch(targetUser)).user.bot
+            ? "yes"
+            : "no",
+        }
+      )
+      .setTimestamp()
+      .setFooter({
+        text: `Generated on request of @${interaction.user.username}`,
+      });
 
-      if(karma < 0) embed.setColor("#FF0000");
-      if(karma > 0) embed.setColor("#00FF00");
-      message.channel.send(embed);
-    }catch(e){
-      message.channel.send(`Oopsie, something went wrong: ${e.message}`);
+    await interaction.reply({
+      embeds: [embed],
+    });
+  } catch (e) {
+    console.error(e);
+    await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
+  }
+}
+async function rank_server_global(interaction, guild) {
+  try {
+    let rank = await karmaRetriever.getTotalRankOfGuild(guild.id);
+    let karma = await karmaRetriever.getTotalKarmaOfGuild(guild.id);
+    const embed = new Discord.EmbedBuilder()
+      .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
+      .setTitle(`${rank}`)
+      .setDescription("Rank of server by its total karma")
+      .addFields(
+        {
+          name: "karma",
+          value: `${karma}`,
+        },
+        {
+          name: "server",
+          value: `${guild.name}`,
+        },
+        {
+          name: "members",
+          value: `${guild.approximateMemberCount}`,
+        }
+      )
+      .setTimestamp()
+      .setFooter({
+        text: `Generated on request of @${interaction.user.username}`,
+      });
+
+    await interaction.reply({
+      embeds: [embed],
+    });
+  } catch (e) {
+    console.error(e);
+    await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
+  }
+}
+async function rank_of_user_in_server(interaction, guild) {
+  try {
+    let rank = await karmaRetriever.getGuildRankOfUser(targetUser, guild.id);
+    let karma = await karmaRetriever.getTotalKarmaOfUserInGuild(
+      targetUser,
+      guild.id
+    );
+    const embed = new Discord.EmbedBuilder()
+      .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
+      .setTitle(`${rank}`)
+      .setDescription(
+        "Rank of user in current server by their karma in this server"
+      )
+      .addFields(
+        {
+          name: "karma",
+          value: `${karma}`,
+        },
+        {
+          name: "user",
+          value: `${targetUser}`,
+        },
+        {
+          name: "bot",
+          value: (await guild.members.fetch(targetUser)).user.bot
+            ? "yes"
+            : "no",
+        }
+      )
+      .setTimestamp()
+      .setFooter({
+        text: `Generated on request of @${interaction.user.username}`,
+      });
+
+    await interaction.reply({
+      embeds: [embed],
+    });
+  } catch (e) {
+    if (e.message === "user not found") {
+      await interaction.reply(
+        "User not found, maybe they haven't received a vote yet?"
+      );
+    } else {
+      console.error(e);
+      await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
     }
   }
 }
+async function rank_of_user_in_server_total(interaction, guild, targetUser) {
+  try {
+    let rank = await karmaRetriever.getTotalRankOfUser(targetUser);
+    let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
+    const embed = new Discord.EmbedBuilder()
+      .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
+      .setTitle(`${rank}`)
+      .setDescription("Rank of user by their karma in all servers")
+      .addFields(
+        {
+          name: "karma",
+          value: `${karma}`,
+        },
+        {
+          name: "user",
+          value: `${targetUser}`,
+        },
+        {
+          name: "bot",
+          value: (await guild.members.fetch(targetUser)).user.bot
+            ? "yes"
+            : "no",
+        }
+      )
+      .setTimestamp()
+      .setFooter({
+        text: `Generated on request of @${interaction.user.username}`,
+      });
 
-async function rank(message, subcommand){
-  const targetUser = message.mentions.users.first() ? message.mentions.users.first().id : message.author.id;
-
-  if(subcommand.startsWith("server global")){
-    //+karma rank server global [@mention]: show global rank of author or mentioned user
-    try{
-      let rank = await karmaRetriever.getTotalRankOfUser(targetUser);
-      let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
-      const embed = new Discord.MessageEmbed()
-        .setColor("#000000")
-        .setTitle(rank)
-        .setDescription("Rank of users from current server by their global karma")
-        .addField("karma", karma)
-        .addField("user", `<@${targetUser}>`, true)
-        .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
-        .setTimestamp()
-        .setFooter(`Generated on request of ${message.author.tag}`);
-
-      if(karma < 0) embed.setColor("#FF0000");
-      if(karma > 0) embed.setColor("#00FF00");
-      message.channel.send(embed);
-    }catch(e){
-      if(e.message === "user not found"){
-        message.channel.send("User not found, maybe they haven't received a vote yet?");
-      }else{
-        message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-      }
-    }
-  }else if(subcommand.startsWith("server total")){
-    //+karma rank server total: show rank of current guild
-    try {
-      let rank = await karmaRetriever.getTotalRankOfGuild(message.guild.id);
-      let karma = await karmaRetriever.getTotalKarmaOfGuild(message.guild.id);
-      const embed = new Discord.MessageEmbed()
-        .setColor("#000000")
-        .setTitle(rank)
-        .setDescription("Rank of servers by their karma")
-        .addField("karma", karma)
-        .addField("server", message.guild.name, true)
-        .addField("members", message.guild.memberCount, true)
-        .setTimestamp()
-        .setFooter(`Generated on request of ${message.author.tag}`);
-
-      if(karma < 0) embed.setColor("#FF0000");
-      if(karma > 0) embed.setColor("#00FF00");
-      message.channel.send(embed);
-    } catch(e) {
-      message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-    }
-  }else if(subcommand.startsWith("server")) {
-    //+karma rank server [@mention]: show rank in server of author or mentioned user
-    try {
-      let rank = await karmaRetriever.getGuildRankOfUser(targetUser, message.guild.id);
-      let karma = await karmaRetriever.getTotalKarmaOfUserInGuild(targetUser, message.guild.id);
-      const embed = new Discord.MessageEmbed()
-        .setColor("#000000")
-        .setTitle(rank)
-        .setDescription("Rank of users by their karma in current server")
-        .addField("karma", karma)
-        .addField("user", `<@${targetUser}>`, true)
-        .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
-        .setTimestamp()
-        .setFooter(`Generated on request of ${message.author.tag}`);
-
-      if(karma < 0) embed.setColor("#FF0000");
-      if(karma > 0) embed.setColor("#00FF00");
-      message.channel.send(embed);
-    } catch(e) {
-      if(e.message === "user not found") {
-        message.channel.send("User not found, maybe they haven't received a vote yet?");
-      } else {
-        message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-      }
-    }
-  }else{
-    //+karma rank [@mention]: show total rank of author or mentioned user
-    try {
-      let rank = await karmaRetriever.getTotalRankOfUser(targetUser);
-      let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
-      const embed = new Discord.MessageEmbed()
-        .setColor("#000000")
-        .setTitle(rank)
-        .setDescription("Rank of all users by their global karma")
-        .addField("karma", karma)
-        .addField("user", `<@${targetUser}>`, true)
-        .addField("bot", (await message.guild.members.fetch(targetUser)).user.bot ? "yes" : "no", true)
-        .setTimestamp()
-        .setFooter(`Generated on request of ${message.author.tag}`);
-
-      if(karma < 0) embed.setColor("#FF0000");
-      if(karma > 0) embed.setColor("#00FF00");
-      message.channel.send(embed);
-    } catch(e) {
-      if(e.message === "user not found") {
-        message.channel.send("User not found, maybe they haven't received a vote yet?");
-      } else {
-        message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-      }
+    await interaction.reply({
+      embeds: [embed],
+    });
+  } catch (e) {
+    if (e.message === "user not found") {
+      await interaction.reply(
+        "User not found, maybe they haven't received a vote yet?"
+      );
+    } else {
+      console.error(e);
+      await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
     }
   }
 }
-
-async function top(message, subcommand){
-  if(subcommand.startsWith("global")){
-    //+karma top global: show top 10 users in current guild by global karma
-    try{
-      let topList = await karmaRetriever.getTopUsersOfGuildTotal(10, message.guild.id);
-      let output = `Showing Top 10 users of ${message.guild.name} based on their global karma:\n`;
-      output += await convertTopListToTable(topList, message);
-      message.channel.send(output);
-    }catch(e){
-      message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-    }
-  }else{
-    //+karma top: show top 10 users current guild by guild karma
-    try {
-      let topList = await karmaRetriever.getTopUsersOfGuild(10, message.guild.id);
-      let output = `Showing Top 10 users of ${message.guild.name} based on their karma in current server:\n`;
-      output += await convertTopListToTable(topList, message);
-      message.channel.send(output);
-    } catch(e) {
-      message.channel.send(`Oopsie, something went wrong: ${e.message}`);
-    }
+async function top_global(interaction, guild) {
+  try {
+    let topList = await karmaRetriever.getTopUsersOfGuildTotal(10, guild.id);
+    let output = `Showing Top 10 users of ${guild.name} based on their global karma:\n`;
+    output += await convertTopListToTable(topList, guild);
+    await interaction.reply(output);
+  } catch (e) {
+    await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
+  }
+}
+async function top_server(interaction, guild) {
+  try {
+    let topList = await karmaRetriever.getTopUsersOfGuild(10, guild.id);
+    let output = `Showing Top 10 users of ${guild.name} based on their karma in current server:\n`;
+    output += await convertTopListToTable(topList, guild);
+    await interaction.reply(output);
+  } catch (e) {
+    await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
   }
 }
 
-async function convertTopListToTable(topList, message){
+async function convertTopListToTable(topList, guild) {
   let output = "```Rank Karma Name\n";
-  for(let i = 0; i < topList.length; i++) {
+  for (let i = 0; i < topList.length; i++) {
     let username = "unknown";
     try {
-      let user = await message.guild.members.fetch(topList[i].userId);
-      username = user.nickname ? user.nickname : user.user.tag;
-    } catch(_) {}
+      let user = await guild.members.fetch(topList[i].userId);
+      username = user.displayName;
+    } catch (_) {}
 
     let rank = i;
     rank++;
     rank = rank.toString() + ".";
-    while(rank.length <= 3) rank += " ";
+    while (rank.length <= 3) rank += " ";
 
     let karma = topList[i].karma.toString();
-    while(karma.length <= 5) karma += " ";
-    if(!karma.startsWith("-")) {
+    while (karma.length <= 5) karma += " ";
+    if (!karma.startsWith("-")) {
       karma = " " + karma;
     } else {
       karma = karma + " ";
