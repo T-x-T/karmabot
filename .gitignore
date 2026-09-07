@@ -5,3 +5,4 @@ node_modules
 config.staging.json
 config.testing.json
 docker-compose.local.yml
+docker-compose.build.yml

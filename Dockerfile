@@ -1,4 +1,4 @@
-FROM keymetrics/pm2:latest-alpine
+FROM node:26-alpine
 
 # Set workdir
 WORKDIR /srv/karmabot/
@@ -7,13 +7,12 @@ WORKDIR /srv/karmabot/
 COPY . .
 
 # Install app dependencies
-ENV NPM_CONFIG_LOGLEVEL warn
-RUN npm install --production && npm run nuxt_build
+ENV NPM_CONFIG_LOGLEVEL=warn
+RUN npm install --production
+
+ENV NODE_ENV=prod
 
 # expose port
-EXPOSE 4004
 EXPOSE 4005
 
-
-
-CMD [ "pm2-runtime", "start", "pm2.json" ]
+CMD [ "npm", "run", "run" ]

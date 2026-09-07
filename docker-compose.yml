@@ -24,5 +24,3 @@ services:
 networks:
   data:
     driver: "bridge"
-  nginx:
-    external: true
