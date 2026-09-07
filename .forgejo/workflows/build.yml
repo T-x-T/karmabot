@@ -35,7 +35,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Run tests
-        run: npm run test
+        run: /usr/bin/npm run test
 
   push_server:
     runs-on: vm
