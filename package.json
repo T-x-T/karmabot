@@ -1,6 +1,6 @@
 {
   "name": "karmabot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Discord bot to add a karma system similar to reddit in Discord",
   "main": "index.js",
   "type": "module",
@@ -8,35 +8,22 @@
     "test": "test"
   },
   "dependencies": {
-    "@nuxt/http": "^0.6.0",
-    "@nuxtjs/axios": "^5.12.4",
-    "@nuxtjs/proxy": "^2.1.0",
-    "chart.js": "^2.9.4",
-    "cookie-universal-nuxt": "^2.1.4",
     "discord.js": "^14.27.0",
-    "ioredis": "^6.0.0",
-    "nuxt": "^2.14.7",
-    "sass": "^1.29.0",
-    "sass-loader": "^10.1.0",
-    "vue-chartjs": "^3.5.1",
-    "qs": "^6.0.0"
+    "ioredis": "^6.0.0"
   },
   "devDependencies": {
     "mocha": "^12.0.0"
   },
   "scripts": {
     "run": "node index.js",
-    "test": "mocha --exit",
-    "nuxt_dev": "nuxt -c nuxt.config.mjs",
-    "nuxt_build": "nuxt build -c nuxt.config.mjs",
-    "nuxt_start": "nuxt start -c nuxt.config.mjs -H 0.0.0.0 -p 4004"
+    "test": "mocha --exit"
   },
   "repository": {
     "type": "git",
     "url": "git+https://git.thetxt.io/thetxt/karmabot.git"
   },
   "author": "txt",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://git.thetxt.io/thetxt/karmabot/issues"
   },
