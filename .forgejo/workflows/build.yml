@@ -11,6 +11,12 @@ jobs:
       container:
         image: git.thetxt.io/thetxt/runner-base:latest
       steps:
+        - name: Login to forgejo registry
+          uses: docker/login-action@v3
+          with:
+            registry: git.thetxt.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.PACKAGE_WRITER_TOKEN }}
         - name: Checkout code
           uses: actions/checkout@v4
         - name: Build server image
