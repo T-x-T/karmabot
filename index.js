@@ -11,28 +11,11 @@ import setupDiscordGeneralCommands from "./src/discordGeneralCommands/index.js";
 import setupApiWebserver from "./src/webApi/index.js";
 import setupHistoryRecorder from "./src/historyRecorder/index.js";
 import setupHistoryRetriever from "./src/historyRetriever/index.js";
-import setupAuth from "./src/auth/index.js";
-
-import { exec } from "child_process";
 
 global.ENVIRONMENT = process.env.NODE_ENV ? process.env.NODE_ENV : "staging";
 const config = JSON.parse(
   fs.readFileSync(`./config.${global.ENVIRONMENT}.json`)
 );
-
-try {
-  exec("npm run nuxt_start", (err, stdOut, stdErr) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("nuxt started");
-    }
-    if (stdOut) console.log("StdOut:", stdOut);
-    if (stdErr) console.log("StdErr:", stdErr);
-  });
-} catch (e) {
-  console.log("Couldnt start nuxt:", e);
-}
 
 setupApiWebserver(config.apiPort);
 
@@ -64,12 +47,6 @@ discordClient.on(Discord.Events.ClientReady, async (readyClient) => {
     ),
     setupHistoryRecorder(config.redisIp, config.redisPort),
     setupHistoryRetriever(config.redisIp, config.redisPort, readyClient),
-    setupAuth(
-      config.clientId,
-      config.clientSecret,
-      config.redirectUri,
-      config.baseUrl
-    ),
   ]);
 
   const commands = new Collection();

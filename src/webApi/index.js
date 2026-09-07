@@ -1,13 +1,12 @@
 import http from "http";
 import url from "url";
-
-import karmaRetriever from "../karmaRetriever/webApi.js";
 import router from "./router.js";
+import fs from "node:fs/promises";
 
 export default function (port) {
   let httpServer = http.createServer(listener);
   httpServer.listen(port, () => {
-    console.log("API Webserver started");
+    console.log(`API Webserver started on port ${port}`);
   });
 }
 
@@ -38,6 +37,15 @@ async function listener(req, res) {
       res.end(JSON.stringify({ error: e.message }));
       console.log(e);
     }
+  } else if (
+    reqData.path.length == 0 ||
+    reqData.path == "/" ||
+    reqData.path.startsWith("/index")
+  ) {
+    res.setHeader("Content-Type", "text/html");
+    res.writeHead(200);
+    const file = await fs.readFile("./assets/index.html");
+    res.end(file);
   } else {
     res.writeHead(404);
     res.end('{"error": "API resource not found"}');

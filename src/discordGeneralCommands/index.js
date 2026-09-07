@@ -29,7 +29,7 @@ export default () => ({
         {
           name: "invite",
           value:
-            "[click me](https://discord.com/oauth2/authorize?client_id=779060613590548521&scope=bot&permissions=1073859648)",
+            "[click me](https://discord.com/oauth2/authorize?client_id=779060613590548521&scope=bot&permissions=8796093025280)",
         },
         { name: "creator", value: "@thetxt" },
         { name: "website", value: "https://karmabot.thetxt.io" },
