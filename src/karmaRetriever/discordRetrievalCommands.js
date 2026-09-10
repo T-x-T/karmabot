@@ -31,7 +31,7 @@ export default async (interaction) => {
       break;
     }
     case "rank_of_user_in_server": {
-      await rank_of_user_in_server(interaction, guild);
+      await rank_of_user_in_server(interaction, guild, targetUser);
       break;
     }
     case "rank_of_user_in_server_total": {
@@ -82,7 +82,7 @@ async function total_server_karma(interaction, guild) {
 async function total_server_karma_of_user(interaction, guild, targetUser) {
   try {
     let karma = await karmaRetriever.getTotalKarmaOfUserInGuild(
-      targetUser,
+      targetUser.id,
       guild.id
     );
     const embed = new Discord.EmbedBuilder()
@@ -114,7 +114,7 @@ async function total_server_karma_of_user(interaction, guild, targetUser) {
 }
 async function total_karma_of_user(interaction, guild, targetUser) {
   try {
-    let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
+    let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser.id);
     const embed = new Discord.EmbedBuilder()
       .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
       .setTitle(`${karma}`)
@@ -179,11 +179,11 @@ async function rank_server_global(interaction, guild) {
     await interaction.reply(`Oopsie, something went wrong: ${e.message}`);
   }
 }
-async function rank_of_user_in_server(interaction, guild) {
+async function rank_of_user_in_server(interaction, guild, targetUser) {
   try {
-    let rank = await karmaRetriever.getGuildRankOfUser(targetUser, guild.id);
+    let rank = await karmaRetriever.getGuildRankOfUser(targetUser.id, guild.id);
     let karma = await karmaRetriever.getTotalKarmaOfUserInGuild(
-      targetUser,
+      targetUser.id,
       guild.id
     );
     const embed = new Discord.EmbedBuilder()
@@ -229,8 +229,8 @@ async function rank_of_user_in_server(interaction, guild) {
 }
 async function rank_of_user_in_server_total(interaction, guild, targetUser) {
   try {
-    let rank = await karmaRetriever.getTotalRankOfUser(targetUser);
-    let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser);
+    let rank = await karmaRetriever.getTotalRankOfUser(targetUser.id);
+    let karma = await karmaRetriever.getTotalKarmaOfUser(targetUser.id);
     const embed = new Discord.EmbedBuilder()
       .setColor(karma < 0 ? "#FF0000" : karma > 0 ? "#00FF00" : "#000000")
       .setTitle(`${rank}`)
